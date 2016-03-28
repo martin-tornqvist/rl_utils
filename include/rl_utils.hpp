@@ -176,22 +176,22 @@ public:
     int x, y;
 };
 
-class Rect
+class R
 {
 public:
-    Rect() :
+    R() :
         p0(P()),
         p1(P()) {}
 
-    Rect(const P& p0, const P& p1) :
+    R(const P& p0, const P& p1) :
         p0(p0),
         p1(p1) {}
 
-    Rect(const int X0, const int Y0, const int X1, const int Y1) :
+    R(const int X0, const int Y0, const int X1, const int Y1) :
         p0(P(X0, Y0)),
         p1(P(X1, Y1)) {}
 
-    Rect(const Rect& r) :
+    R(const R& r) :
         p0(r.p0),
         p1(r.p1) {}
 
@@ -518,10 +518,10 @@ void to_vec(const bool* array2,
             const int H,
             std::vector<P>& out);
 
-bool is_pos_inside(const P& pos, const Rect& area);
+bool is_pos_inside(const P& pos, const R& area);
 
-bool is_area_inside(const Rect& inner,
-                    const Rect& outer,
+bool is_area_inside(const R& inner,
+                    const R& outer,
                     const bool COUNT_EQUAL_AS_INSIDE);
 
 bool is_pos_adj(const P& pos1,

@@ -389,7 +389,7 @@ void to_vec(const bool* array2,
         }
     }
 }
-bool is_pos_inside(const P& pos, const Rect& area)
+bool is_pos_inside(const P& pos, const R& area)
 {
     return
         pos.x >= area.p0.x &&
@@ -398,8 +398,8 @@ bool is_pos_inside(const P& pos, const Rect& area)
         pos.y <= area.p1.y;
 }
 
-bool is_area_inside(const Rect& inner,
-                    const Rect& outer,
+bool is_area_inside(const R& inner,
+                    const R& outer,
                     const bool COUNT_EQUAL_AS_INSIDE)
 {
     if (COUNT_EQUAL_AS_INSIDE)
