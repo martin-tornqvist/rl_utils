@@ -3,6 +3,83 @@
 
 #include <vector>
 #include <string>
+#include <iostream>
+
+//-----------------------------------------------------------------------------
+// OPTIONS
+//-----------------------------------------------------------------------------
+//Lvl of TRACE output in debug mode
+// 0 : Disabled
+// 1 : Standard
+// 2 : Verbose
+#ifndef TRACE_LVL
+
+#define TRACE_LVL 1
+
+#endif //TRACE_LVL
+
+//Enable rendering and delays during map gen for evaluation/demo purposes.
+//Comment out to disable, uncomment to enable
+//#define DEMO_MODE 1
+//-----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Custom trace output and assert functionality
+//-----------------------------------------------------------------------------
+#ifdef NDEBUG //Release mode
+
+#define ASSERT(check)
+
+#define TRACE                     if (1) ; else std::cerr
+#define TRACE_FUNC_BEGIN          if (1) ; else std::cerr
+#define TRACE_FUNC_END            if (1) ; else std::cerr
+#define TRACE_VERBOSE             if (1) ; else std::cerr
+#define TRACE_FUNC_BEGIN_VERBOSE  if (1) ; else std::cerr
+#define TRACE_FUNC_END_VERBOSE    if (1) ; else std::cerr
+
+#else //Debug mode
+
+#define ASSERT(check) \
+    do_not_call::assert_impl(check, #check, __FILE__, __LINE__, __func__)
+
+#define TRACE if (TRACE_LVL < 1) ; else std::cerr \
+    << std::endl \
+    << __FILE__ << ", " \
+    << __LINE__ << ", " \
+    << __func__ << "():" << std::endl
+
+#define TRACE_FUNC_BEGIN if (TRACE_LVL < 1) ; else std::cerr \
+    << std::endl \
+    << __FILE__ << ", " \
+    << __LINE__ << ", " \
+    << __func__ << "()..." << std::endl
+
+#define TRACE_FUNC_END if (TRACE_LVL < 1) ; else std::cerr \
+    << std::endl \
+    << __FILE__ << ", " \
+    << __LINE__ << ", " \
+    << __func__ << "() [DONE]" << std::endl
+
+#define TRACE_VERBOSE             if (TRACE_LVL < 2) ; else TRACE
+#define TRACE_FUNC_BEGIN_VERBOSE  if (TRACE_LVL < 2) ; else TRACE_FUNC_BEGIN
+#define TRACE_FUNC_END_VERBOSE    if (TRACE_LVL < 2) ; else TRACE_FUNC_END
+
+#endif //NDEBUG
+
+//-----------------------------------------------------------------------------
+// Custom assert
+// NOTE: Never call this function directly, use "ASSERT" macro above
+//-----------------------------------------------------------------------------
+namespace do_not_call
+{
+
+void assert_impl(const bool check,
+                 const char* check_str,
+                 const char* file,
+                 const int line,
+                 const char* func);
+
+}
 
 //-----------------------------------------------------------------------------
 // Geometry
