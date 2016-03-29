@@ -91,17 +91,17 @@ public:
         x(0),
         y(0) {}
 
-    P(const int X, const int Y) :
-        x(X),
-        y(Y) {}
+    P(const int x, const int y) :
+        x(x),
+        y(y) {}
 
     P(const P& p) :
         x(p.x),
         y(p.y) {}
 
-    P(const int V) :
-        x(V),
-        y(V) {}
+    P(const int v) :
+        x(v),
+        y(v) {}
 
     P& operator=(const P& p)
     {
@@ -110,10 +110,10 @@ public:
         return *this;
     }
 
-    P& operator/=(const int V)
+    P& operator/=(const int v)
     {
-        x /= V;
-        y /= V;
+        x /= v;
+        y /= v;
         return *this;
     }
 
@@ -136,9 +136,9 @@ public:
         return P(x + p.x, y + p.y);
     }
 
-    P operator+(const int  V) const
+    P operator+(const int  v) const
     {
-        return P(x + V, y + V);
+        return P(x + v, y + v);
     }
 
     P operator-(const P& p) const
@@ -146,14 +146,14 @@ public:
         return P(x - p.x, y - p.y);
     }
 
-    P operator-(const int V) const
+    P operator-(const int v) const
     {
-        return P(x - V, y - V);
+        return P(x - v, y - v);
     }
 
-    P operator/(const int  V) const
+    P operator/(const int  v) const
     {
-        return P(x / V, y / V);
+        return P(x / v, y / v);
     }
 
     P operator/(const P& p) const
@@ -161,9 +161,9 @@ public:
         return P(x / p.x, y / p.y);
     }
 
-    P operator*(const int V) const
+    P operator*(const int v) const
     {
-        return P(x * V, y * V);
+        return P(x * v, y * v);
     }
 
     P operator*(const P& p) const
@@ -181,9 +181,9 @@ public:
         return x != p.x || y != p.y;
     }
 
-    bool operator!=(const int V) const
+    bool operator!=(const int v) const
     {
-        return x != V || y != V;
+        return x != v || y != v;
     }
 
     bool operator>(const P& p) const
@@ -191,9 +191,9 @@ public:
         return x >  p.x && y > p.y;
     }
 
-    bool operator>(const int V) const
+    bool operator>(const int v) const
     {
-        return x >  V && y > V;
+        return x >  v && y > v;
     }
 
     bool operator<(const P& p) const
@@ -201,9 +201,9 @@ public:
         return x <  p.x && y < p.y;
     }
 
-    bool operator<(const int V) const
+    bool operator<(const int v) const
     {
-        return x < V && y < V;
+        return x < v && y < v;
     }
 
     bool operator>=(const P& p) const
@@ -211,9 +211,9 @@ public:
         return x >= p.x && y >= p.y;
     }
 
-    bool operator>=(const int V) const
+    bool operator>=(const int v) const
     {
-        return x >= V && y >= V;
+        return x >= v && y >= v;
     }
 
     bool operator<=(const P& p) const
@@ -221,9 +221,9 @@ public:
         return x <= p.x && y <= p.y;
     }
 
-    bool operator<=(const int  V) const
+    bool operator<=(const int  v) const
     {
-        return x <= V && y <= V;
+        return x <= v && y <= v;
     }
 
     P signs() const
@@ -264,9 +264,9 @@ public:
         p0(p0),
         p1(p1) {}
 
-    R(const int X0, const int Y0, const int X1, const int Y1) :
-        p0(P(X0, Y0)),
-        p1(P(X1, Y1)) {}
+    R(const int x0, const int y0, const int x1, const int y1) :
+        p0(P(x0, y0)),
+        p1(P(x1, y1)) {}
 
     R(const R& r) :
         p0(r.p0),
@@ -381,7 +381,7 @@ Dir dir(const P& offset_values);
 
 P offset(const Dir dir);
 
-P rnd_adj_pos(const P& origin, const bool IS_CENTER_ALLOWED);
+P rnd_adj_pos(const P& origin, const bool is_center_allowed);
 
 void compass_dir_name(const P& from_pos,
                       const P& to_pos,
@@ -403,10 +403,10 @@ struct Dice_param
         sides   (0),
         plus    (0) {}
 
-    Dice_param(const int ROLLS, const int SIDES, const int PLUS = 0) :
-        rolls   (ROLLS),
-        sides   (SIDES),
-        plus    (PLUS) {}
+    Dice_param(const int rolls, const int sides, const int plus = 0) :
+        rolls   (rolls),
+        sides   (sides),
+        plus    (plus) {}
 
     Dice_param(const Dice_param& other) :
         rolls   (other.rolls),
@@ -442,9 +442,9 @@ struct Range
         min(-1),
         max(-1) {}
 
-    Range(const int MIN, const int MAX) :
-        min(MIN),
-        max(MAX) {}
+    Range(const int min, const int max) :
+        min(min),
+        max(max) {}
 
     Range(const Range& other) :
         Range(other.min, other.max) {}
@@ -454,21 +454,21 @@ struct Range
         return max - min + 1;
     }
 
-    bool is_in_range(const int V) const
+    bool is_in_range(const int v) const
     {
-        return V >= min && V <= max;
+        return v >= min && v <= max;
     }
 
-    void set(const int MIN, const int MAX)
+    void set(const int min_val, const int max_val)
     {
-        min = MIN;
-        max = MAX;
+        min = min_val;
+        max = max_val;
     }
 
-    Range& operator/=(const int V)
+    Range& operator/=(const int v)
     {
-        min /= V;
-        max /= V;
+        min /= v;
+        max /= v;
         return *this;
     }
 
@@ -483,14 +483,14 @@ struct Fraction
         num(-1),
         den(-1) {}
 
-    Fraction(const int NUM, const int DEN) :
-        num(NUM),
-        den(DEN) {}
+    Fraction(const int num, const int den) :
+        num(num),
+        den(den) {}
 
-    void set(const int NUM, const int DEN)
+    void set(const int numer, const int denom)
     {
-        num = NUM;
-        den = DEN;
+        num = numer;
+        den = denom;
     }
 
     bool roll() const;
@@ -509,20 +509,20 @@ namespace rnd
 void seed(const unsigned long val);
 
 //If not called with a positive non-zero number of sides, this will always return zero.
-int dice(const int ROLLS, const int SIDES);
+int dice(const int rolls, const int sides);
 
 bool coin_toss();
 
-bool fraction(const int NUMER, const int DENOM);
+bool fraction(const int numer, const int denom);
 
 bool one_in(const int N);
 
 //Can be called with any range (positive or negative), V2 does *not* have to be bigger than V1.
-int range(const int V1, const int V2);
+int range(const int v1, const int v2);
 
 int percent();
 
-bool percent(const int PCT_CHANCE);
+bool percent(const int pct_chance);
 
 int weighted_choice(const std::vector<int> weights);
 
@@ -562,7 +562,7 @@ struct Time_data
         second_ (second) {}
 
     std::string time_str(const Time_type lowest,
-                         const bool ADD_SEPARATORS) const;
+                         const bool add_separators) const;
 
     int year_, month_, day_, hour_, minute_, second_;
 };
@@ -570,50 +570,50 @@ struct Time_data
 //-----------------------------------------------------------------------------
 // Misc utils
 //-----------------------------------------------------------------------------
-void set_constr_in_range(const int MIN,
+void set_constr_in_range(const int min,
                          int& val,
-                         const int MAX);
+                         const int max);
 
-void set_constr_in_range(const double MIN,
+void set_constr_in_range(const double min,
                          double& val,
-                         const double MAX);
+                         const double max);
 
-int constr_in_range(const int MIN,
-                    const int VAL,
-                    const int MAX);
+int constr_in_range(const int min,
+                    const int val,
+                    const int max);
 
-int constr_in_range(const double MIN,
-                    const double VAL,
-                    const double MAX);
+int constr_in_range(const double min,
+                    const double val,
+                    const double max);
 
 //Takes a boolean 2d array of given size, and populates a vector with positions matching the value
 //to store (true/false). This can for example be useful if you have a parsed map of blocked and
 //free cells, and you want a list of free cells to (randomly) select from.
 void to_vec(const bool* array2,
-            const bool VALUE_TO_STORE,
-            const int W,
-            const int H,
+            const bool value_to_store,
+            const int w,
+            const int h,
             std::vector<P>& out);
 
 bool is_pos_inside(const P& pos, const R& area);
 
 bool is_area_inside(const R& inner,
                     const R& outer,
-                    const bool COUNT_EQUAL_AS_INSIDE);
+                    const bool count_equal_as_inside);
 
 bool is_pos_adj(const P& pos1,
                 const P& pos2,
-                const bool COUNT_SAME_CELL_AS_ADJ);
+                const bool count_same_cell_as_adj);
 
 P closest_pos(const P& p, const std::vector<P>& positions);
 
 //Distance as the king moves in chess
 //The distance between (x0, y0) and (x1, y1) is defined as max(|x1 - x0|, |y1 - y0|).
 //This is typically the model used for movement in roguelikes.
-int king_dist(const int X0,
-              const int Y0,
-              const int X1,
-              const int Y1);
+int king_dist(const int x0,
+              const int y0,
+              const int x1,
+              const int y1);
 
 int king_dist(const P& p0, const P& p1);
 
@@ -621,7 +621,7 @@ int king_dist(const P& p0, const P& p1);
 //The distance between (x0, y0) and (x1, y1) is defined as |x1 - x0| + |y1 - y0|.
 int taxi_dist(const P& p0, const P& p1);
 
-bool is_val_in_range(const int V, const Range range);
+bool is_val_in_range(const int v, const Range range);
 
 Time_data cur_time();
 

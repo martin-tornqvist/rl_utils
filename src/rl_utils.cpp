@@ -48,23 +48,23 @@ const std::string compass_dir_names[3][3] =
     {"SW", "S", "SE"}
 };
 
-const double PI_DB            = 3.14159265;
-const double ANGLE_45_DB      = 2 * PI_DB / 8;
-const double ANGLE_45_HALF_DB = ANGLE_45_DB / 2.0;
+const double pi_db            = 3.14159265;
+const double angle_45_db      = 2 * pi_db / 8;
+const double angle_45_half_db = angle_45_db / 2.0;
 
 const double edge[4] =
 {
-    ANGLE_45_HALF_DB + (ANGLE_45_DB * 0),
-    ANGLE_45_HALF_DB + (ANGLE_45_DB * 1),
-    ANGLE_45_HALF_DB + (ANGLE_45_DB * 2),
-    ANGLE_45_HALF_DB + (ANGLE_45_DB * 3)
+    angle_45_half_db + (angle_45_db * 0),
+    angle_45_half_db + (angle_45_db * 1),
+    angle_45_half_db + (angle_45_db * 2),
+    angle_45_half_db + (angle_45_db * 3)
 };
 
 } //namespace
 
 Dir dir(const P& offset)
 {
-    assert(offset.x >= -1 &&
+    ASSERT(offset.x >= -1 &&
            offset.y >= -1 &&
            offset.x <=  1 &&
            offset.y <=  1);
@@ -98,7 +98,7 @@ Dir dir(const P& offset)
 
 P offset(const Dir dir)
 {
-    assert(dir != Dir::END);
+    ASSERT(dir != Dir::END);
 
     switch (dir)
     {
@@ -136,11 +136,11 @@ P offset(const Dir dir)
     return P(0, 0);
 }
 
-P rnd_adj_pos(const P& origin, const bool IS_CENTER_ALLOWED)
+P rnd_adj_pos(const P& origin, const bool is_center_allowed)
 {
     const std::vector<P>* vec = nullptr;
 
-    if (IS_CENTER_ALLOWED)
+    if (is_center_allowed)
     {
         vec = &dir_list_w_center;
     }
@@ -149,9 +149,9 @@ P rnd_adj_pos(const P& origin, const bool IS_CENTER_ALLOWED)
         vec = &dir_list;
     }
 
-    const size_t IDX = rnd::range(0, vec->size() - 1);
+    const size_t idx = rnd::range(0, vec->size() - 1);
 
-    return origin + vec->at(IDX);
+    return origin + vec->at(idx);
 }
 
 void compass_dir_name(const P& from_pos,
@@ -161,33 +161,33 @@ void compass_dir_name(const P& from_pos,
     dst = "";
 
     const P offset(to_pos - from_pos);
-    const double ANGLE_DB = atan2(-offset.y, offset.x);
+    const double angle_db = atan2(-offset.y, offset.x);
 
-    if (ANGLE_DB        <  -edge[2] && ANGLE_DB >  -edge[3])
+    if (angle_db        <  -edge[2] && angle_db >  -edge[3])
     {
         dst = "SW";
     }
-    else if (ANGLE_DB <= -edge[1] && ANGLE_DB >= -edge[2])
+    else if (angle_db <= -edge[1] && angle_db >= -edge[2])
     {
         dst = "S";
     }
-    else if (ANGLE_DB <  -edge[0] && ANGLE_DB >  -edge[1])
+    else if (angle_db <  -edge[0] && angle_db >  -edge[1])
     {
         dst = "SE";
     }
-    else if (ANGLE_DB >= -edge[0] && ANGLE_DB <=  edge[0])
+    else if (angle_db >= -edge[0] && angle_db <=  edge[0])
     {
         dst = "E";
     }
-    else if (ANGLE_DB >   edge[0] && ANGLE_DB <   edge[1])
+    else if (angle_db >   edge[0] && angle_db <   edge[1])
     {
         dst = "NE";
     }
-    else if (ANGLE_DB >=  edge[1] && ANGLE_DB <=  edge[2])
+    else if (angle_db >=  edge[1] && angle_db <=  edge[2])
     {
         dst = "N";
     }
-    else if (ANGLE_DB >   edge[2] && ANGLE_DB <   edge[3])
+    else if (angle_db >   edge[2] && angle_db <   edge[3])
     {
         dst = "NW";
     }
@@ -234,23 +234,23 @@ namespace
 
 MTRand mt_rand;
 
-int roll(const int ROLLS, const int SIDES)
+int roll(const int rolls, const int sides)
 {
-    if (SIDES <= 0)
+    if (sides <= 0)
     {
         return 0;
     }
 
-    if (SIDES == 1)
+    if (sides == 1)
     {
-        return ROLLS * SIDES;
+        return rolls * sides;
     }
 
     int result = 0;
 
-    for (int i = 0; i < ROLLS; ++i)
+    for (int i = 0; i < rolls; ++i)
     {
-        result += mt_rand.randInt(SIDES - 1) + 1;
+        result += mt_rand.randInt(sides - 1) + 1;
     }
 
     return result;
@@ -263,9 +263,9 @@ void seed(const unsigned long val)
     mt_rand = MTRand(val);
 }
 
-int dice(const int ROLLS, const int SIDES)
+int dice(const int rolls, const int sides)
 {
-    return roll(ROLLS, SIDES);
+    return roll(rolls, sides);
 }
 
 bool coin_toss()
@@ -273,35 +273,35 @@ bool coin_toss()
     return roll(1, 2) == 2;
 }
 
-bool fraction(const int NUMER, const int DENOM)
+bool fraction(const int numer, const int denom)
 {
     //This function should never be called with a denominator less than one, since it's unclear
     //what it means that something should happen e.g. "N times in 0", or "N times in -1".
-    assert(DENOM >= 1);
+    ASSERT(denom >= 1);
 
     //If numerator is bigger than denominator, it's most likely a bug (should something occur e.g.
     //5 times in 3 ???) - don't allow this...
-    assert(NUMER <= DENOM);
+    ASSERT(numer <= denom);
 
     //A negative numerator is of course nonsense
-    assert(NUMER >= 0);
+    ASSERT(numer >= 0);
 
     //If any of the rules above are broken on a release build, try to perform the action that was
     //*probably* intended.
 
     //NOTE: A numerator of 0 is always allowed (it simply means "no chance")
 
-    if ((NUMER <= 0) || (DENOM <= 0))
+    if ((numer <= 0) || (denom <= 0))
     {
         return false;
     }
 
-    if ((NUMER >= DENOM) || (DENOM == 1))
+    if ((numer >= denom) || (denom == 1))
     {
         return true;
     }
 
-    return roll(1, DENOM) <= NUMER;
+    return roll(1, denom) <= numer;
 }
 
 bool one_in(const int N)
@@ -309,12 +309,12 @@ bool one_in(const int N)
     return fraction(1, N);
 }
 
-int range(const int V1, const int V2)
+int range(const int v1, const int v2)
 {
-    const int MIN = std::min(V1, V2);
-    const int MAX = std::max(V1, V2);
+    const int min = std::min(v1, v2);
+    const int max = std::max(v1, v2);
 
-    return MIN + roll(1, MAX - MIN + 1) - 1;
+    return min + roll(1, max - min + 1) - 1;
 }
 
 int percent()
@@ -322,95 +322,95 @@ int percent()
     return roll(1, 100);
 }
 
-bool percent(const int PCT_CHANCE)
+bool percent(const int pct_chance)
 {
-    return PCT_CHANCE >= roll(1, 100);
+    return pct_chance >= roll(1, 100);
 }
 
 int weighted_choice(const std::vector<int> weights)
 {
 #ifndef NDEBUG
-    for (const int WEIGHT : weights)
+    for (const int weight : weights)
     {
-        assert(WEIGHT > 0);
+        ASSERT(weight > 0);
     }
 #endif // NDEBUG
 
-    const int SUM = std::accumulate(begin(weights), end(weights), 0);
+    const int sum = std::accumulate(begin(weights), end(weights), 0);
 
-    int rnd = rnd::range(0, SUM - 1);
+    int rnd = rnd::range(0, sum - 1);
 
     for (size_t i = 0; i < weights.size(); ++i)
     {
-        const int WEIGHT = weights[i];
+        const int weight = weights[i];
 
-        if (rnd < WEIGHT)
+        if (rnd < weight)
         {
             return i;
         }
 
-        rnd -= WEIGHT;
+        rnd -= weight;
     }
 
     //This point should never be reached
-    assert(false);
+    ASSERT(false);
 
     return 0;
 }
 
 } //rnd
 
-void set_constr_in_range(const int MIN, int& val, const int MAX)
+void set_constr_in_range(const int min, int& val, const int max)
 {
-    if (MAX >= MIN)
+    if (max >= min)
     {
-        val = std::min(MAX, std::max(val, MIN));
+        val = std::min(max, std::max(val, min));
     }
 }
 
-void set_constr_in_range(const double MIN, double& val, const double MAX)
+void set_constr_in_range(const double min, double& val, const double max)
 {
-    if (MAX > MIN)
+    if (max > min)
     {
-        val = std::min(MAX, std::max(val, MIN));
+        val = std::min(max, std::max(val, min));
     }
 }
 
-int constr_in_range(const int MIN, const int VAL, const int MAX)
+int constr_in_range(const int min, const int val, const int max)
 {
-    if (MAX < MIN)
+    if (max < min)
     {
         return -1;
     }
 
-    return std::min(MAX, std::max(VAL, MIN));
+    return std::min(max, std::max(val, min));
 }
 
-int constr_in_range(const double MIN, const double VAL, const double MAX)
+int constr_in_range(const double min, const double val, const double max)
 {
-    if (MAX < MIN)
+    if (max < min)
     {
         return -1;
     }
 
-    return std::min(MAX, std::max(VAL, MIN));
+    return std::min(max, std::max(val, min));
 }
 
 void to_vec(const bool* array2,
-            const bool VALUE_TO_STORE,
-            const int W,
-            const int H,
+            const bool value_to_store,
+            const int w,
+            const int h,
             std::vector<P>& out)
 {
     out.clear();
 
-    for (int x = 0; x < W; ++x)
+    for (int x = 0; x < w; ++x)
     {
-        for (int y = 0; y < H; ++y)
+        for (int y = 0; y < h; ++y)
         {
-            const bool V = *(array2 + (x * H) + y);
+            const bool v = *(array2 + (x * h) + y);
 
-            if (V == VALUE_TO_STORE)
+            if (v == value_to_store)
             {
                 out.push_back(P(x, y));
             }
@@ -428,9 +428,9 @@ bool is_pos_inside(const P& pos, const R& area)
 
 bool is_area_inside(const R& inner,
                     const R& outer,
-                    const bool COUNT_EQUAL_AS_INSIDE)
+                    const bool count_equal_as_inside)
 {
-    if (COUNT_EQUAL_AS_INSIDE)
+    if (count_equal_as_inside)
     {
         return inner.p0.x >= outer.p0.x &&
                inner.p1.x <= outer.p1.x &&
@@ -446,9 +446,9 @@ bool is_area_inside(const R& inner,
     }
 }
 
-int king_dist(const int X0, const int Y0, const int X1, const int Y1)
+int king_dist(const int x0, const int y0, const int x1, const int y1)
 {
-    return std::max(abs(X1 - X0), abs(Y1 - Y0));
+    return std::max(abs(x1 - x0), abs(y1 - y0));
 }
 
 int king_dist(const P& p0, const P& p1)
@@ -469,11 +469,11 @@ P closest_pos(const P& p, const std::vector<P>& positions)
 
     for (P p_cmp : positions)
     {
-        const int CUR_DIST = king_dist(p, p_cmp);
+        const int cur_dist = king_dist(p, p_cmp);
 
-        if (CUR_DIST < dist_to_nearest)
+        if (cur_dist < dist_to_nearest)
         {
-            dist_to_nearest = CUR_DIST;
+            dist_to_nearest = cur_dist;
             closest_pos     = p_cmp;
         }
     }
@@ -483,7 +483,7 @@ P closest_pos(const P& p, const std::vector<P>& positions)
 
 bool is_pos_adj(const P& pos1,
                 const P& pos2,
-                const bool COUNT_SAME_CELL_AS_ADJ)
+                const bool count_same_cell_as_adj)
 {
     if (
         pos1.x < pos2.x - 1 ||
@@ -495,7 +495,7 @@ bool is_pos_adj(const P& pos1,
     }
     else if (pos1.x == pos2.x && pos1.y == pos2.y)
     {
-        return COUNT_SAME_CELL_AS_ADJ;
+        return count_same_cell_as_adj;
     }
 
     return true;
@@ -519,7 +519,7 @@ Time_data cur_time()
                      now->tm_sec);
 }
 
-std::string Time_data::time_str(const Time_type lowest, const bool ADD_SEPARATORS) const
+std::string Time_data::time_str(const Time_type lowest, const bool add_separators) const
 {
     std::string ret = to_str(year_);
 
@@ -541,26 +541,26 @@ std::string Time_data::time_str(const Time_type lowest, const bool ADD_SEPARATOR
 
     if (lowest >= Time_type::hour)
     {
-        ret += (ADD_SEPARATORS ? " " : "_") + hour_str;
+        ret += (add_separators ? " " : "_") + hour_str;
     }
 
     if (lowest >= Time_type::minute)
     {
-        ret += (ADD_SEPARATORS ? ":" : "-") + minute_str;
+        ret += (add_separators ? ":" : "-") + minute_str;
     }
 
     if (lowest >= Time_type::second)
     {
-        ret += (ADD_SEPARATORS ? ":" : "-") + second_str;
+        ret += (add_separators ? ":" : "-") + second_str;
     }
 
     return ret;
 }
 
-std::string to_str(const int IN)
+std::string to_str(const int in)
 {
     std::ostringstream buffer;
-    buffer << IN;
+    buffer << in;
     return buffer.str();
 }
 
