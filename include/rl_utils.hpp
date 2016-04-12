@@ -302,6 +302,12 @@ public:
         return ((p1 + p0) / 2);
     }
 
+    bool is_p_inside(const P& p) const
+    {
+        return p >= p0 &&
+               p <= p1;
+    }
+
     P p0;
     P p1;
 };
