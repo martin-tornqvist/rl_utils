@@ -308,6 +308,12 @@ public:
                p <= p1;
     }
 
+    // Useful for e.g. converting map cell dimensions to pixel dimensions
+    R operator*(const P& p)
+    {
+        return R(p0 * p, p1 * p);
+    }
+
     P p0;
     P p1;
 };
@@ -635,4 +641,4 @@ std::string to_str(const int IN);
 
 int to_int(const std::string& in);
 
-#endif //RL_UTILS_H
+#endif // RL_UTILS_H

@@ -25,7 +25,8 @@ void assert_impl(const bool check,
                   << std::endl
                   << std::endl << "*** ASSERTION FAILED! ***"
                   << std::endl
-                  << std::endl << check_str
+                  << std::endl << "Check that failed:"
+                  << std::endl << "\"" << check_str << "\""
                   << std::endl
                   << std::endl;
 
