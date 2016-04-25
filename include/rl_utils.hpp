@@ -117,17 +117,31 @@ public:
         return *this;
     }
 
-    P& operator+=(const P& o)
+    P& operator+=(const P& p)
     {
-        x += o.x;
-        y += o.y;
+        x += p.x;
+        y += p.y;
         return *this;
     }
 
-    P& operator-=(const P& o)
+    P& operator-=(const P& p)
     {
-        x -= o.x;
-        y -= o.y;
+        x -= p.x;
+        y -= p.y;
+        return *this;
+    }
+
+    P& operator++()
+    {
+        ++x;
+        ++y;
+        return *this;
+    }
+
+    P& operator--()
+    {
+        --x;
+        --y;
         return *this;
     }
 
@@ -188,17 +202,17 @@ public:
 
     bool operator>(const P& p) const
     {
-        return x >  p.x && y > p.y;
+        return x > p.x && y > p.y;
     }
 
     bool operator>(const int v) const
     {
-        return x >  v && y > v;
+        return x > v && y > v;
     }
 
     bool operator<(const P& p) const
     {
-        return x <  p.x && y < p.y;
+        return x < p.x && y < p.y;
     }
 
     bool operator<(const int v) const
@@ -538,7 +552,15 @@ bool percent(const int pct_chance);
 
 int weighted_choice(const std::vector<int> weights);
 
-} //rnd
+template <typename T>
+T element(const std::vector<T>& vec)
+{
+    const size_t idx = range(0, vec.size() - 1);
+
+    return vec[idx];
+}
+
+} // rnd
 
 enum class Time_type
 {
