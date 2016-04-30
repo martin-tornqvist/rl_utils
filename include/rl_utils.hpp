@@ -6,9 +6,9 @@
 #include <iostream>
 
 //-----------------------------------------------------------------------------
-// OPTIONS
+// Trace level
 //-----------------------------------------------------------------------------
-//Lvl of TRACE output in debug mode
+// Lvl of TRACE output in debug mode
 // 0 : Disabled
 // 1 : Standard
 // 2 : Verbose
@@ -18,15 +18,10 @@
 
 #endif //TRACE_LVL
 
-//Enable rendering and delays during map gen for evaluation/demo purposes.
-//Comment out to disable, uncomment to enable
-//#define DEMO_MODE 1
-//-----------------------------------------------------------------------------
-
 //-----------------------------------------------------------------------------
 // Custom trace output and assert functionality
 //-----------------------------------------------------------------------------
-#ifdef NDEBUG //Release mode
+#ifdef NDEBUG // Release mode
 
 #define ASSERT(check)
 
@@ -37,7 +32,7 @@
 #define TRACE_FUNC_BEGIN_VERBOSE  if (1) ; else std::cerr
 #define TRACE_FUNC_END_VERBOSE    if (1) ; else std::cerr
 
-#else //Debug mode
+#else // Debug mode
 
 #define ASSERT(check) \
     do_not_call::assert_impl(check, #check, __FILE__, __LINE__, __func__)
@@ -322,6 +317,20 @@ public:
                p <= p1;
     }
 
+    R& operator+=(const P& p)
+    {
+        p0 += p;
+        p1 += p;
+        return *this;
+    }
+
+    R& operator-=(const P& p)
+    {
+        p0 -= p;
+        p1 -= p;
+        return *this;
+    }
+
     // Useful for e.g. converting map cell dimensions to pixel dimensions
     R operator*(const P& p)
     {
@@ -558,6 +567,12 @@ T element(const std::vector<T>& vec)
     const size_t idx = range(0, vec.size() - 1);
 
     return vec[idx];
+}
+
+template <typename T>
+size_t idx(const std::vector<T>& vec)
+{
+    return range(0, vec.size() - 1);
 }
 
 } // rnd
