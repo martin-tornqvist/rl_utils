@@ -61,7 +61,7 @@ const double edge[4] =
     angle_45_half_db + (angle_45_db * 3)
 };
 
-} //namespace
+} // namespace
 
 Dir dir(const P& offset)
 {
@@ -145,7 +145,7 @@ P rnd_adj_pos(const P& origin, const bool is_center_allowed)
     {
         vec = &dir_list_w_center;
     }
-    else //Center not allowed
+    else // Center not allowed
     {
         vec = &dir_list;
     }
@@ -210,7 +210,7 @@ void compass_dir_name(const P& offs, std::string& dst)
     dst = compass_dir_names[offs.x + 1][offs.y + 1];
 }
 
-} //dir_utils
+} // dir_utils
 
 int Dice_param::roll() const
 {
@@ -257,7 +257,7 @@ int roll(const int rolls, const int sides)
     return result;
 }
 
-} //namespace
+} // namespace
 
 void seed(const unsigned long val)
 {
@@ -276,19 +276,19 @@ bool coin_toss()
 
 bool fraction(const int numer, const int denom)
 {
-    //This function should never be called with a denominator less than one, since it's unclear
-    //what it means that something should happen e.g. "N times in 0", or "N times in -1".
+    // This function should never be called with a denominator less than one,
+    // since it's unclear what e.g. "N times in -1" would mean.
     ASSERT(denom >= 1);
 
-    //If numerator is bigger than denominator, it's most likely a bug (should something occur e.g.
-    //5 times in 3 ???) - don't allow this...
+    // If the numerator is bigger than the denominator, it's likely a bug
+    // (should something occur e.g. 5 times in 3 ???) - don't allow this...
     ASSERT(numer <= denom);
 
-    //A negative numerator is of course nonsense
+    // A negative numerator is of course nonsense
     ASSERT(numer >= 0);
 
-    //If any of the rules above are broken on a release build, try to perform the action that was
-    //*probably* intended.
+    // If any of the rules above are broken on a release build, try to perform
+    // the action that was *probably* intended.
 
     //NOTE: A numerator of 0 is always allowed (it simply means "no chance")
 
@@ -353,13 +353,264 @@ int weighted_choice(const std::vector<int> weights)
         rnd -= weight;
     }
 
-    //This point should never be reached
+    // This point should never be reached
     ASSERT(false);
 
     return 0;
 }
 
-} //rnd
+} // rnd
+
+namespace
+{
+
+// One dimensional index into a two dimensional array
+size_t idx2(const P& p, const size_t h)
+{
+    return p.x * h + p.y;
+}
+
+}
+
+namespace floodfill
+{
+
+void run(const P& p0,
+         const bool* blocked,
+         int* out,
+         const P& map_dims,
+         int travel_lmt,
+         const P& p1,
+         const bool allow_diagonal)
+{
+    std::fill_n(out, map_dims.x * map_dims.y, 0);
+
+    // List of positions to travel to
+    std::vector<P> positions;
+
+    // In the worst case we need to visit every position, reserve the elements
+    positions.reserve(map_dims.x * map_dims.y);
+
+    // Instead of removing evaluated positions from the vector, we track which
+    // index to try next (cheaper than erasing front elements).
+    size_t next_p_idx = 0;
+
+    int     val                 = 0;
+    bool    path_exists         = true;
+    bool    is_at_tgt           = false;
+    bool    is_stopping_at_tgt  = p1.x != -1;
+
+    const R bounds(P(1, 1), map_dims - 2);
+
+    P p(p0);
+
+    const auto& dirs = allow_diagonal ?
+                       dir_utils::dir_list :
+                       dir_utils::cardinal_list;
+
+    bool done = false;
+
+    while (!done)
+    {
+        // "Flood" around the current position, and add those to the list of
+        // positions to travel to.
+        for (const P& d : dirs)
+        {
+            const P new_p(p + d);
+
+            if (
+                !blocked[idx2(new_p, map_dims.y)]   &&
+                bounds.is_p_inside(new_p)           &&
+                out[idx2(new_p, map_dims.y)] == 0   &&
+                new_p != p0)
+            {
+                val = out[idx2(p, map_dims.y)];
+
+                if (travel_lmt == -1 || val < travel_lmt)
+                {
+                    out[idx2(new_p, map_dims.y)] = val + 1;
+                }
+
+                if (is_stopping_at_tgt && new_p == p1)
+                {
+                    is_at_tgt = true;
+                    break;
+                }
+
+                if (!is_stopping_at_tgt || !is_at_tgt)
+                {
+                    positions.push_back(new_p);
+                }
+            }
+        } // Offset loop
+
+        if (is_stopping_at_tgt)
+        {
+            if (positions.size() == next_p_idx)
+            {
+                path_exists = false;
+            }
+
+            if (is_at_tgt || !path_exists)
+            {
+                done = true;
+            }
+        }
+        else if (positions.size() == next_p_idx)
+        {
+            done = true;
+        }
+
+        if (val == travel_lmt)
+        {
+            done = true;
+        }
+
+        if (!is_stopping_at_tgt || !is_at_tgt)
+        {
+            if (positions.size() == next_p_idx)
+            {
+                // No more positions to evaluate
+                path_exists = false;
+            }
+            else // There are more positions to evaluate
+            {
+                p = positions[next_p_idx];
+
+                ++next_p_idx;
+            }
+        }
+    } // while
+}
+
+} // floodfill
+
+namespace pathfind
+{
+
+void run(const P& p0,
+         const P& p1,
+         const bool* blocked,
+         int* flood_buffer,
+         const P& map_dims,
+         std::vector<P>& out,
+         const bool allow_diagonal,
+         const bool randomize_steps)
+{
+    out.clear();
+
+    if (p0 == p1)
+    {
+        // Origin and target is same cell
+        return;
+    }
+
+    floodfill::run(p0,
+                   blocked,
+                   flood_buffer,
+                   map_dims,
+                   -1,
+                   p1,
+                   allow_diagonal);
+
+    if (flood_buffer[idx2(p1, map_dims.y)] == 0)
+    {
+        // No path exists
+        return;
+    }
+
+    const std::vector<P>& dirs = allow_diagonal ?
+                                 dir_utils::dir_list :
+                                 dir_utils::cardinal_list;
+
+    const size_t nr_dirs = dirs.size();
+
+    // Corresponds to the elements in "dirs"
+    std::vector<bool> valid_offsets(nr_dirs, false);
+
+    // The path length will be equal to the flood value at the target cell, so
+    // we can reserve that many elements beforehand.
+    out.reserve(flood_buffer[idx2(p1, map_dims.y)]);
+
+    P p(p1);
+    out.push_back(p);
+
+    const R map_r(P(0, 0), map_dims - 1);
+
+    while (true)
+    {
+        const int val = flood_buffer[idx2(p, map_dims.y)];
+
+        P adj_p;
+
+        // Find valid offsets, and check if origin is reached
+        for (size_t i = 0; i < nr_dirs; ++i)
+        {
+            const P& d(dirs[i]);
+
+            adj_p = p + d;
+
+            if (adj_p == p0)
+            {
+                // Origin reached
+                return;
+            }
+
+            // TODO: What is the purpose of this check? If the current value is
+            // zero, doesn't that mean this cell is the target? Only the target
+            // cell and unreachable cells should have values of zero(?)
+            // Try removing the check and verify if the algorithm still works
+            if (val != 0)
+            {
+                const bool is_inside_map = map_r.is_p_inside(adj_p);
+
+                const int adj_val = is_inside_map ?
+                                    flood_buffer[idx2(adj_p, map_dims.y)] : 0;
+
+                // Mark this as a valid travel direction if it's fewer steps
+                // from the target than the current cell
+                valid_offsets[i] = adj_val < val;
+            }
+        }
+
+        // Set the next position to one of the valid offsets - either pick one
+        // randomly, or iterate over the list and pick the first valid choice.
+        if (randomize_steps)
+        {
+            std::vector<P> adj_p_bucket;
+
+            for (size_t i = 0; i < nr_dirs; ++i)
+            {
+                if (valid_offsets[i])
+                {
+                    adj_p_bucket.push_back(p + dirs[i]);
+                }
+            }
+
+            ASSERT(!adj_p_bucket.empty());
+
+            adj_p = rnd::element(adj_p_bucket);
+        }
+        else // Do not randomize step choices - iterate over offset list
+        {
+            for (size_t i = 0; i < nr_dirs; ++i)
+            {
+                if (valid_offsets[i])
+                {
+                    adj_p = P(p + dirs[i]);
+                    break;
+                }
+            }
+        }
+
+        out.push_back(adj_p);
+
+        p = adj_p;
+
+    } //while
+}
+
+} // pathfind
 
 void set_constr_in_range(const int min, int& val, const int max)
 {
@@ -470,11 +721,11 @@ P closest_pos(const P& p, const std::vector<P>& positions)
 
     for (P p_cmp : positions)
     {
-        const int cur_dist = king_dist(p, p_cmp);
+        const int dist = king_dist(p, p_cmp);
 
-        if (cur_dist < dist_to_nearest)
+        if (dist < dist_to_nearest)
         {
-            dist_to_nearest = cur_dist;
+            dist_to_nearest = dist;
             closest_pos     = p_cmp;
         }
     }
@@ -507,7 +758,7 @@ bool is_val_in_range(const int V, const Range range)
     return range.is_in_range(V);
 }
 
-Time_data cur_time()
+Time_data current_time()
 {
     time_t t        = time(nullptr);
     struct tm* now  = localtime(&t);

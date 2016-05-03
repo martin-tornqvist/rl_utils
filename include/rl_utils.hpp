@@ -577,6 +577,42 @@ size_t idx(const std::vector<T>& vec)
 
 } // rnd
 
+namespace floodfill
+{
+
+void run(const P& p0,
+         const bool* blocked,
+         int* out,
+         const P& map_dims,
+         int travel_lmt = -1,
+         const P& p1 = P(-1, -1),
+         const bool allow_diagonal = true);
+
+} // floodfill
+
+namespace pathfind
+{
+
+//-----------------------------------------------------------------------------
+// The path goes from target to origin, not including the origin.
+//
+// "randomize_steps", when true, for each step if there are multiple valid
+// (nearer) choices, pick one at random. Otherwise iterate over a predefined
+// list of offsets until a valid step is found. The second way is more
+// optimized and is the default behavior (best for e.g. AI), while the
+// randomized method can produces nicer results in some cases (e.g. corridors).
+//-----------------------------------------------------------------------------
+void run(const P& p0,                           // Origin
+         const P& p1,                           // Target
+         const bool* blocked,                   // Blocked cells
+         int* flood_buffer,                     // Buffer for floodfill
+         const P& map_dims,                     // Map dimensions
+         std::vector<P>& out,                   // Result
+         const bool allow_diagonal = true,      // Cardinals only?
+         const bool randomize_steps = false);   // See above
+
+} // pathfind
+
 enum class Time_type
 {
     year,
@@ -672,7 +708,7 @@ int taxi_dist(const P& p0, const P& p1);
 
 bool is_val_in_range(const int v, const Range range);
 
-Time_data cur_time();
+Time_data current_time();
 
 std::string to_str(const int IN);
 
