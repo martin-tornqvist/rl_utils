@@ -5,6 +5,6 @@
 
 #include "rl_utils.hpp"
 
-void bresenham(P p1, const P& p2, std::vector<P>& out);
+void bresenham(P p0, const P& p1, std::vector<P>& out);
 
 #endif // BRESENHAM_HPP
