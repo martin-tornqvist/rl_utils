@@ -2,64 +2,66 @@
 
 #include <cstdlib>
 
-void bresenham(P p, const P& tgt, std::vector<P>& out)
+void bresenham(P p0, const P& p1, std::vector<P>& out)
 {
     out.clear();
 
-    int delta_x(tgt.x - p.x);
+    const P deltas(p1 - p0);
 
-    // If x1 == x2, then it does not matter what we set here
-    const char ix = (delta_x > 0) - (delta_x < 0);
+    P abs_deltas(std::abs(deltas.x),
+                 std::abs(deltas.y));
 
-    delta_x = std::abs(delta_x) << 1;
+    out.reserve(std::max(
+                    abs_deltas.x,
+                    abs_deltas.y));
 
-    int delta_y = tgt.y - p.y;
+    abs_deltas.x = abs_deltas.x << 1;
+    abs_deltas.y = abs_deltas.y << 1;
 
-    // If y1 == y2, then it does not matter what we set here
-    const char iy = (delta_y > 0) - (delta_y < 0);
+    const P signs(deltas.signs());
 
-    delta_y = std::abs(delta_y) << 1;
-
-    out.push_back(p);
-
-    if (delta_x >= delta_y)
+    // Walk the line and add positions on the way
+    if (abs_deltas.x >= abs_deltas.y)
     {
-        // error may go below zero
-        int error = delta_y - (delta_x >> 1);
+        // Calculate the error factor, which may go below zero
+        int error = abs_deltas.y - (abs_deltas.x >> 1);
 
-        while (p.x != tgt.x)
+        while (p0.x != p1.x)
         {
-            if ((error >= 0) && (error || (ix > 0)))
+            if (error > 0)
             {
-                error -= delta_x;
-                p.y += iy;
+                if (error || (signs.x > 0))
+                {
+                    p0.y    += signs.y;
+                    error   -= abs_deltas.x;
+                }
             }
-            // else do nothing
 
-            error += delta_y;
-            p.x += ix;
+            p0.x    += signs.x;
+            error   += abs_deltas.y;
 
-            out.push_back(p);
+            out.push_back(p0);
         }
     }
-    else // delta_x < delta_y
+    else // abs_deltas.x < abs_deltas.y
     {
-        // error may go below zero
-        int error = delta_x - (delta_y >> 1);
+        // Calculate the error factor, which may go below zero
+        int error = abs_deltas.x - (abs_deltas.y >> 1);
 
-        while (p.y != tgt.y)
+        while (p0.y != p1.y)
         {
-            if ((error >= 0) && (error || (iy > 0)))
+            if (error > 0)
             {
-                error -= delta_y;
-                p.x += ix;
+                if (error || (signs.y > 0))
+                {
+                    p0.x    += signs.x;
+                    error   -= abs_deltas.y;
+                }
             }
-            // else do nothing
+            p0.y    += signs.y;
+            error   += abs_deltas.x;
 
-            error += delta_x;
-            p.y += iy;
-
-            out.push_back(p);
+            out.push_back(p0);
         }
     }
 }
