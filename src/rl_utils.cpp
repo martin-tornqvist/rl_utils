@@ -656,6 +656,9 @@ void to_vec(const bool* array2,
 {
     out.clear();
 
+    // Reserve space for worst case to avoid tons of reallocations
+    out.reserve(w * h);
+
     for (int x = 0; x < w; ++x)
     {
         for (int y = 0; y < h; ++y)
