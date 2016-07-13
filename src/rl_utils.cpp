@@ -4,6 +4,7 @@
 #include <vector>
 #include <cassert>
 #include <sstream>
+#include <numeric>
 
 #include "mersenne_twister.hpp"
 
