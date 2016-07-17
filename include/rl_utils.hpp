@@ -351,17 +351,17 @@ public:
     P p1;
 };
 
-struct Pos_val
+struct PosVal
 {
-    Pos_val() :
+    PosVal() :
         pos(P()),
         val(-1) {}
 
-    Pos_val(const P& pos_, const int val_) :
+    PosVal(const P& pos_, const int val_) :
         pos     (pos_),
         val     (val_) {}
 
-    Pos_val(const Pos_val& o) :
+    PosVal(const PosVal& o) :
         pos     (o.pos),
         val     (o.val) {}
 
@@ -441,24 +441,24 @@ void compass_dir_name(const P& offs, std::string& dst);
 //-----------------------------------------------------------------------------
 // Types for random number generation
 //-----------------------------------------------------------------------------
-struct Dice_param
+struct DiceParam
 {
-    Dice_param() :
+    DiceParam() :
         rolls   (0),
         sides   (0),
         plus    (0) {}
 
-    Dice_param(const int rolls, const int sides, const int plus = 0) :
+    DiceParam(const int rolls, const int sides, const int plus = 0) :
         rolls   (rolls),
         sides   (sides),
         plus    (plus) {}
 
-    Dice_param(const Dice_param& other) :
+    DiceParam(const DiceParam& other) :
         rolls   (other.rolls),
         sides   (other.sides),
         plus    (other.plus) {}
 
-    Dice_param& operator=(const Dice_param& other)
+    DiceParam& operator=(const DiceParam& other)
     {
         rolls = other.rolls;
         sides = other.sides;
@@ -620,7 +620,7 @@ void run(const P& p0,                           // Origin
 
 } // pathfind
 
-enum class Time_type
+enum class TimeType
 {
     year,
     month,
@@ -630,9 +630,9 @@ enum class Time_type
     second
 };
 
-struct Time_data
+struct TimeData
 {
-    Time_data() :
+    TimeData() :
         year_   (0),
         month_  (0),
         day_    (0),
@@ -640,7 +640,7 @@ struct Time_data
         minute_ (0),
         second_ (0) {}
 
-    Time_data(int year,
+    TimeData(int year,
               int month,
               int day,
               int hour,
@@ -653,7 +653,7 @@ struct Time_data
         minute_ (minute),
         second_ (second) {}
 
-    std::string time_str(const Time_type lowest,
+    std::string time_str(const TimeType lowest,
                          const bool add_separators) const;
 
     int year_, month_, day_, hour_, minute_, second_;
@@ -715,7 +715,7 @@ int taxi_dist(const P& p0, const P& p1);
 
 bool is_val_in_range(const int v, const Range range);
 
-Time_data current_time();
+TimeData current_time();
 
 std::string to_str(const int IN);
 

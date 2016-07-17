@@ -212,7 +212,7 @@ void compass_dir_name(const P& offs, std::string& dst)
 
 } // dir_utils
 
-int Dice_param::roll() const
+int DiceParam::roll() const
 {
     return rnd::dice(rolls, sides) + plus;
 }
@@ -744,12 +744,12 @@ bool is_val_in_range(const int V, const Range range)
     return range.is_in_range(V);
 }
 
-Time_data current_time()
+TimeData current_time()
 {
     time_t t        = time(nullptr);
     struct tm* now  = localtime(&t);
 
-    return Time_data(now->tm_year + 1900,
+    return TimeData(now->tm_year + 1900,
                      now->tm_mon + 1,
                      now->tm_mday,
                      now->tm_hour,
@@ -757,7 +757,7 @@ Time_data current_time()
                      now->tm_sec);
 }
 
-std::string Time_data::time_str(const Time_type lowest, const bool add_separators) const
+std::string TimeData::time_str(const TimeType lowest, const bool add_separators) const
 {
     std::string ret = to_str(year_);
 
@@ -767,27 +767,27 @@ std::string Time_data::time_str(const Time_type lowest, const bool add_separator
     const std::string minute_str  = (minute_  < 10 ? "0" : "") + to_str(minute_);
     const std::string second_str  = (second_  < 10 ? "0" : "") + to_str(second_);
 
-    if (lowest >= Time_type::month)
+    if (lowest >= TimeType::month)
     {
         ret += "-" + month_str;
     }
 
-    if (lowest >= Time_type::day)
+    if (lowest >= TimeType::day)
     {
         ret += "-" + day_str;
     }
 
-    if (lowest >= Time_type::hour)
+    if (lowest >= TimeType::hour)
     {
         ret += (add_separators ? " " : "_") + hour_str;
     }
 
-    if (lowest >= Time_type::minute)
+    if (lowest >= TimeType::minute)
     {
         ret += (add_separators ? ":" : "-") + minute_str;
     }
 
-    if (lowest >= Time_type::second)
+    if (lowest >= TimeType::second)
     {
         ret += (add_separators ? ":" : "-") + second_str;
     }
