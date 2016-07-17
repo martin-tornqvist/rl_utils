@@ -5,7 +5,11 @@
 #include <string>
 #include <iostream>
 
-//-----------------------------------------------------------------------------
+// This header must be supplied by the "user" project, and contain some
+// necessary symbols such as "map_w" and "map_h".
+#include "global.hpp"
+
+//------------------------------------------------------------------------
 // Trace level
 //-----------------------------------------------------------------------------
 // Lvl of TRACE output in debug mode
@@ -16,7 +20,7 @@
 
 #define TRACE_LVL 1
 
-#endif //TRACE_LVL
+#endif // TRACE_LVL
 
 //-----------------------------------------------------------------------------
 // Custom trace output and assert functionality
@@ -37,29 +41,35 @@
 #define ASSERT(check) \
     do_not_call::assert_impl(check, #check, __FILE__, __LINE__, __func__)
 
-#define TRACE if (TRACE_LVL < 1) ; else std::cerr \
+#define TRACE if (TRACE_LVL < 1) ; else \
+    std::cerr \
     << std::endl \
     << __FILE__ << ", " \
     << __LINE__ << ", " \
-    << __func__ << "():" << std::endl
+    << __func__ << "():" \
+    << std::endl
 
-#define TRACE_FUNC_BEGIN if (TRACE_LVL < 1) ; else std::cerr \
+#define TRACE_FUNC_BEGIN if (TRACE_LVL < 1) ; else \
+    std::cerr \
     << std::endl \
     << __FILE__ << ", " \
     << __LINE__ << ", " \
-    << __func__ << "()..." << std::endl
+    << __func__ << "()..." \
+    << std::endl
 
-#define TRACE_FUNC_END if (TRACE_LVL < 1) ; else std::cerr \
+#define TRACE_FUNC_END if (TRACE_LVL < 1) ; else \
+    std::cerr \
     << std::endl \
     << __FILE__ << ", " \
     << __LINE__ << ", " \
-    << __func__ << "() [DONE]" << std::endl
+    << __func__ << "() [DONE]" \
+    << std::endl
 
 #define TRACE_VERBOSE             if (TRACE_LVL < 2) ; else TRACE
 #define TRACE_FUNC_BEGIN_VERBOSE  if (TRACE_LVL < 2) ; else TRACE_FUNC_BEGIN
 #define TRACE_FUNC_END_VERBOSE    if (TRACE_LVL < 2) ; else TRACE_FUNC_END
 
-#endif //NDEBUG
+#endif // NDEBUG
 
 //-----------------------------------------------------------------------------
 // Custom assert
@@ -426,7 +436,7 @@ void compass_dir_name(const Dir dir, std::string& dst);
 
 void compass_dir_name(const P& offs, std::string& dst);
 
-} //dir_utils
+} // dir_utils
 
 //-----------------------------------------------------------------------------
 // Types for random number generation
@@ -539,11 +549,11 @@ struct Fraction
 namespace rnd
 {
 
-//NOTE: If no parameters are passed to the MTRand constructor, it will be seeded with current time.
-//Seeding it manually is only necessary if seed should be controlled.
+// NOTE: If no parameters are passed to the MTRand constructor, it will be seeded with current time.
+// Seeding it manually is only necessary if seed should be controlled.
 void seed(const unsigned long val);
 
-//If not called with a positive non-zero number of sides, this will always return zero.
+// If not called with a positive non-zero number of sides, this will always return zero.
 int dice(const int rolls, const int sides);
 
 bool coin_toss();
@@ -552,7 +562,7 @@ bool fraction(const int numer, const int denom);
 
 bool one_in(const int N);
 
-//Can be called with any range (positive or negative), V2 does *not* have to be bigger than V1.
+// Can be called with any range (positive or negative), V2 does *not* have to be bigger than V1.
 int range(const int v1, const int v2);
 
 int percent();
@@ -581,9 +591,8 @@ namespace floodfill
 {
 
 void run(const P& p0,
-         const bool* blocked,
-         int* out,
-         const P& map_dims,
+         const bool blocked[map_w][map_h],
+         int out[map_w][map_h],
          int travel_lmt = -1,
          const P& p1 = P(-1, -1),
          const bool allow_diagonal = true);
@@ -604,9 +613,7 @@ namespace pathfind
 //-----------------------------------------------------------------------------
 void run(const P& p0,                           // Origin
          const P& p1,                           // Target
-         const bool* blocked,                   // Blocked cells
-         int* flood_buffer,                     // Buffer for floodfill
-         const P& map_dims,                     // Map dimensions
+         const bool blocked[map_h][map_h],      // Blocked cells
          std::vector<P>& out,                   // Result
          const bool allow_diagonal = true,      // Cardinals only?
          const bool randomize_steps = false);   // See above
@@ -671,9 +678,9 @@ int constr_in_range(const double min,
                     const double val,
                     const double max);
 
-//Takes a boolean 2d array of given size, and populates a vector with positions matching the value
-//to store (true/false). This can for example be useful if you have a parsed map of blocked and
-//free cells, and you want a list of free cells to (randomly) select from.
+// Takes a boolean 2d array of given size, and populates a vector with positions matching the value
+// to store (true/false). This can for example be useful if you have a parsed map of blocked and
+// free cells, and you want a list of free cells to (randomly) select from.
 void to_vec(const bool* array2,
             const bool value_to_store,
             const int w,
@@ -692,9 +699,9 @@ bool is_pos_adj(const P& pos1,
 
 P closest_pos(const P& p, const std::vector<P>& positions);
 
-//Distance as the king moves in chess
-//The distance between (x0, y0) and (x1, y1) is defined as max(|x1 - x0|, |y1 - y0|).
-//This is typically the model used for movement in roguelikes.
+// Distance as the king moves in chess
+// The distance between (x0, y0) and (x1, y1) is defined as max(|x1 - x0|, |y1 - y0|).
+// This is typically the model used for movement in roguelikes.
 int king_dist(const int x0,
               const int y0,
               const int x1,
@@ -702,8 +709,8 @@ int king_dist(const int x0,
 
 int king_dist(const P& p0, const P& p1);
 
-//Taxicab distance - also called "rectilinear distance", "Manhattan distance", etc.
-//The distance between (x0, y0) and (x1, y1) is defined as |x1 - x0| + |y1 - y0|.
+// Taxicab distance - also called "rectilinear distance", "Manhattan distance", etc.
+// The distance between (x0, y0) and (x1, y1) is defined as |x1 - x0| + |y1 - y0|.
 int taxi_dist(const P& p0, const P& p1);
 
 bool is_val_in_range(const int v, const Range range);

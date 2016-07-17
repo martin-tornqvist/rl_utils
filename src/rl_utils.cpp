@@ -290,7 +290,7 @@ bool fraction(const int numer, const int denom)
     // If any of the rules above are broken on a release build, try to perform
     // the action that was *probably* intended.
 
-    //NOTE: A numerator of 0 is always allowed (it simply means "no chance")
+    // NOTE: A numerator of 0 is always allowed (it simply means "no chance")
 
     if ((numer <= 0) || (denom <= 0))
     {
@@ -361,35 +361,23 @@ int weighted_choice(const std::vector<int> weights)
 
 } // rnd
 
-namespace
-{
-
-// One dimensional index into a two dimensional array
-size_t idx2(const P& p, const size_t h)
-{
-    return p.x * h + p.y;
-}
-
-}
-
 namespace floodfill
 {
 
 void run(const P& p0,
-         const bool* blocked,
-         int* out,
-         const P& map_dims,
+         const bool blocked[map_w][map_h],
+         int out[map_w][map_h],
          int travel_lmt,
          const P& p1,
          const bool allow_diagonal)
 {
-    std::fill_n(out, map_dims.x * map_dims.y, 0);
+    std::fill_n(*out, nr_map_cells, 0);
 
     // List of positions to travel to
     std::vector<P> positions;
 
-    // In the worst case we need to visit every position, reserve the elements
-    positions.reserve(map_dims.x * map_dims.y);
+    // In the worst case we need to visit every position, reserve elements
+    positions.reserve(nr_map_cells);
 
     // Instead of removing evaluated positions from the vector, we track which
     // index to try next (cheaper than erasing front elements).
@@ -400,7 +388,7 @@ void run(const P& p0,
     bool    is_at_tgt           = false;
     bool    is_stopping_at_tgt  = p1.x != -1;
 
-    const R bounds(P(1, 1), map_dims - 2);
+    const R bounds(P(1, 1), P(map_w, map_h) - 2);
 
     P p(p0);
 
@@ -419,16 +407,16 @@ void run(const P& p0,
             const P new_p(p + d);
 
             if (
-                !blocked[idx2(new_p, map_dims.y)]   &&
-                bounds.is_p_inside(new_p)           &&
-                out[idx2(new_p, map_dims.y)] == 0   &&
+                !blocked[new_p.x][new_p.y]     &&
+                bounds.is_p_inside(new_p)      &&
+                out[new_p.x][new_p.y] == 0     &&
                 new_p != p0)
             {
-                val = out[idx2(p, map_dims.y)];
+                val = out[p.x][p.y];
 
                 if (travel_lmt == -1 || val < travel_lmt)
                 {
-                    out[idx2(new_p, map_dims.y)] = val + 1;
+                    out[new_p.x][new_p.y] = val + 1;
                 }
 
                 if (is_stopping_at_tgt && new_p == p1)
@@ -490,9 +478,7 @@ namespace pathfind
 
 void run(const P& p0,
          const P& p1,
-         const bool* blocked,
-         int* flood_buffer,
-         const P& map_dims,
+         const bool blocked[map_w][map_h],
          std::vector<P>& out,
          const bool allow_diagonal,
          const bool randomize_steps)
@@ -505,15 +491,16 @@ void run(const P& p0,
         return;
     }
 
+    int flood_buffer[map_w][map_h];
+
     floodfill::run(p0,
                    blocked,
                    flood_buffer,
-                   map_dims,
                    -1,
                    p1,
                    allow_diagonal);
 
-    if (flood_buffer[idx2(p1, map_dims.y)] == 0)
+    if (flood_buffer[p1.x][p1.y] == 0)
     {
         // No path exists
         return;
@@ -530,16 +517,17 @@ void run(const P& p0,
 
     // The path length will be equal to the flood value at the target cell, so
     // we can reserve that many elements beforehand.
-    out.reserve(flood_buffer[idx2(p1, map_dims.y)]);
+    out.reserve(flood_buffer[p1.x][p1.y]);
 
+    // We start at the target cell
     P p(p1);
     out.push_back(p);
 
-    const R map_r(P(0, 0), map_dims - 1);
+    const R map_r(P(0, 0), P(map_w, map_h) - 1);
 
     while (true)
     {
-        const int val = flood_buffer[idx2(p, map_dims.y)];
+        const int current_val = flood_buffer[p.x][p.y];
 
         P adj_p;
 
@@ -556,20 +544,15 @@ void run(const P& p0,
                 return;
             }
 
-            // TODO: What is the purpose of this check? If the current value is
-            // zero, doesn't that mean this cell is the target? Only the target
-            // cell and unreachable cells should have values of zero(?)
-            // Try removing the check and verify if the algorithm still works
-            if (val != 0)
+            if (map_r.is_p_inside(adj_p))
             {
-                const bool is_inside_map = map_r.is_p_inside(adj_p);
+                const int adj_val = flood_buffer[adj_p.x][adj_p.y];
 
-                const int adj_val = is_inside_map ?
-                                    flood_buffer[idx2(adj_p, map_dims.y)] : 0;
-
-                // Mark this as a valid travel direction if it's fewer steps
-                // from the target than the current cell
-                valid_offsets[i] = adj_val < val;
+                // Mark this as a valid travel direction if it is not blocked,
+                // and is fewer steps from the target than the current cell.
+                valid_offsets[i] =
+                    (adj_val != 0) &&
+                    (adj_val < current_val);
             }
         }
 
@@ -607,7 +590,7 @@ void run(const P& p0,
 
         p = adj_p;
 
-    } //while
+    } // while
 }
 
 } // pathfind
