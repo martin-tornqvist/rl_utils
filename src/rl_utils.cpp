@@ -1,5 +1,6 @@
 #include "rl_utils.hpp"
 
+#include <numeric>
 #include <algorithm>
 #include <vector>
 #include <cassert>
