@@ -632,24 +632,20 @@ int constr_in_range(const double min, const double val, const double max)
     return std::min(max, std::max(val, min));
 }
 
-void to_vec(const bool* array2,
+void to_vec(const bool a[map_w][map_h],
             const bool value_to_store,
-            const int w,
-            const int h,
             std::vector<P>& out)
 {
     out.clear();
 
     // Reserve space for worst case to avoid tons of reallocations
-    out.reserve(w * h);
+    out.reserve(nr_map_cells);
 
-    for (int x = 0; x < w; ++x)
+    for (int x = 0; x < map_w; ++x)
     {
-        for (int y = 0; y < h; ++y)
+        for (int y = 0; y < map_h; ++y)
         {
-            const bool v = *(array2 + (x * h) + y);
-
-            if (v == value_to_store)
+            if (a[x][y] == value_to_store)
             {
                 out.push_back(P(x, y));
             }

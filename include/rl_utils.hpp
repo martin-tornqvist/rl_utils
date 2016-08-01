@@ -678,13 +678,12 @@ int constr_in_range(const double min,
                     const double val,
                     const double max);
 
-// Takes a boolean 2d array of given size, and populates a vector with positions matching the value
-// to store (true/false). This can for example be useful if you have a parsed map of blocked and
-// free cells, and you want a list of free cells to (randomly) select from.
-void to_vec(const bool* array2,
+// Takes a boolean map array, and populates a vector with positions matching the
+// value to store (true/false). This can for example be useful if you have a
+// parsed map of blocked and free cells, and you want a list of free cells to
+// (randomly) select from.
+void to_vec(const bool a[map_w][map_h],
             const bool value_to_store,
-            const int w,
-            const int h,
             std::vector<P>& out);
 
 bool is_pos_inside(const P& pos, const R& area);
