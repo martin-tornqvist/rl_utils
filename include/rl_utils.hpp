@@ -397,6 +397,15 @@ const std::vector<P> cardinal_list
     P( 0,  1)
 };
 
+const std::vector<P> cardinal_list_w_center
+{
+    P( 0,  0),
+    P(-1,  0),
+    P( 1,  0),
+    P( 0, -1),
+    P( 0,  1)
+};
+
 const std::vector<P> dir_list
 {
     P(-1,  0),
