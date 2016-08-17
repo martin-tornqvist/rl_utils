@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <algorithm>
+#include <functional>
+#include <array>
 
 // This header must be supplied by the "user" project, and contain some
 // necessary symbols such as "map_w" and "map_h".
@@ -369,6 +372,118 @@ struct PosVal
     int val;
 };
 
+// Two dimensional array class
+template<typename T>
+class Array2
+{
+public:
+    Array2() :
+        data_   (nullptr),
+        dims_   (0, 0) {}
+
+    Array2(const P& dims) :
+        data_   (nullptr),
+        dims_   ()
+    {
+        resize(dims);
+    }
+
+    Array2(const int w, const int h) :
+        data_   (nullptr),
+        dims_   ()
+    {
+        resize(P(w, h));
+    }
+
+    ~Array2() {}
+
+    void resize(const P& dims)
+    {
+        // TODO: How to resize?
+        const size_t size = dims.x * dims.y;
+
+        data_ = new T[size];
+
+        dims_ = dims;
+    }
+
+    void resize(const int w, const int h)
+    {
+        resize(P(w, h));
+    }
+
+    T& operator()(const P& p)
+    {
+        check_pos(p);
+
+        const size_t idx = pos_to_idx(p);
+
+        return data_[idx];
+    }
+
+    const T& operator()(const P& p) const
+    {
+        return (*this)(p);
+    }
+
+    T& operator()(const int x, const int y)
+    {
+        return (*this)(P(x, y));
+    }
+
+    const T& operator()(const int x, const int y) const
+    {
+        return (*this)(P(x, y));
+    }
+
+    void for_each(std::function<void(T& v)> func)
+    {
+        const size_t size = nr_elements();
+
+        for (size_t idx = 0; idx < size; ++idx)
+        {
+            func(data_[idx]);
+        }
+    }
+
+    void clear()
+    {
+        delete[] data_;
+
+        dims_.set(0, 0);
+    }
+
+    const P& dims() const
+    {
+        return dims_;
+    }
+
+private:
+    size_t pos_to_idx(const P& p) const
+    {
+        return (p.x * dims_.y) + p.y;
+    }
+
+    size_t nr_elements() const
+    {
+        return dims_.x * dims_.y;
+    }
+
+    void check_pos(const P& p) const
+    {
+        if (p.x >= dims_.x || p.y >= dims_.y)
+        {
+            ASSERT(false);
+        }
+    }
+
+    //std::array<T, 0> data_;
+
+    T* data_;
+
+    P dims_;
+};
+
 //------------------------------------------------------------------------------
 // Utility functionality for working with directions and offsets
 //------------------------------------------------------------------------------
@@ -558,11 +673,13 @@ struct Fraction
 namespace rnd
 {
 
-// NOTE: If no parameters are passed to the MTRand constructor, it will be seeded with current time.
-// Seeding it manually is only necessary if seed should be controlled.
+// NOTE: If no parameters are passed to the MTRand constructor, it will be
+//       seeded with current time. Seeding it manually is only necessary if seed
+//       should be controlled.
 void seed(const unsigned long val);
 
-// If not called with a positive non-zero number of sides, this will always return zero.
+// NOTE: If not called with a positive non-zero number of sides, this will
+//        always return zero.
 int dice(const int rolls, const int sides);
 
 bool coin_toss();
@@ -571,7 +688,8 @@ bool fraction(const int numer, const int denom);
 
 bool one_in(const int N);
 
-// Can be called with any range (positive or negative), V2 does *not* have to be bigger than V1.
+// Can be called with any range (positive or negative), V2 does *not* have to be
+// bigger than V1.
 int range(const int v1, const int v2);
 
 int percent();
