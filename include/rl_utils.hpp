@@ -395,16 +395,20 @@ public:
         resize(P(w, h));
     }
 
-    ~Array2() {}
+    ~Array2()
+    {
+        delete[] data_;
+    }
 
     void resize(const P& dims)
     {
-        // TODO: How to resize?
-        const size_t size = dims.x * dims.y;
+        dims_ = dims;
+
+        const size_t size = nr_elements();
+
+        delete[] data_;
 
         data_ = new T[size];
-
-        dims_ = dims;
     }
 
     void resize(const int w, const int h)
@@ -477,10 +481,7 @@ private:
         }
     }
 
-    //std::array<T, 0> data_;
-
     T* data_;
-
     P dims_;
 };
 
