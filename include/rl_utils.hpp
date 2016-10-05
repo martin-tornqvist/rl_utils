@@ -82,6 +82,7 @@ void assert_impl(const bool check,
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <numeric>
 
 // This header must be supplied by the "user" project, and contain some
 // necessary symbols such as "map_w" and "map_h".
