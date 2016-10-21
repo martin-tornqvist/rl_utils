@@ -33,6 +33,16 @@ public:
         delete[] data_;
     }
 
+    Array2& operator=(const Array2& other)
+    {
+        delete[] data_;
+
+        data_ = other.data_;
+        dims_ = other.dims_;
+
+        return *this;
+    }
+
     void resize(const P& dims)
     {
         dims_ = dims;
@@ -60,7 +70,7 @@ public:
 
     const T& operator()(const P& p) const
     {
-        return (*this)(p);
+        return (*const_cast<Array2*>(this))(p);
     }
 
     T& operator()(const int x, const int y)

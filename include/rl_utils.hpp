@@ -30,32 +30,32 @@
 
 #else // Debug mode
 
-#define ASSERT(check) \
+#define ASSERT(check)                                                   \
     do_not_call::assert_impl(check, #check, __FILE__, __LINE__, __func__)
 
-#define TRACE if (TRACE_LVL < 1) ; else \
-    std::cerr \
-    << std::endl \
-    << __FILE__ << ", " \
-    << __LINE__ << ", " \
-    << __func__ << "():" \
-    << std::endl
+#define TRACE if (TRACE_LVL < 1) ; else         \
+        std::cerr                               \
+            << std::endl                        \
+            << __FILE__ << ", "                 \
+            << __LINE__ << ", "                 \
+            << __func__ << "():"                \
+            << std::endl
 
-#define TRACE_FUNC_BEGIN if (TRACE_LVL < 1) ; else \
-    std::cerr \
-    << std::endl \
-    << __FILE__ << ", " \
-    << __LINE__ << ", " \
-    << __func__ << "()..." \
-    << std::endl
+#define TRACE_FUNC_BEGIN if (TRACE_LVL < 1) ; else      \
+        std::cerr                                       \
+            << std::endl                                \
+            << __FILE__ << ", "                         \
+            << __LINE__ << ", "                         \
+            << __func__ << "()..."                      \
+            << std::endl
 
-#define TRACE_FUNC_END if (TRACE_LVL < 1) ; else \
-    std::cerr \
-    << std::endl \
-    << __FILE__ << ", " \
-    << __LINE__ << ", " \
-    << __func__ << "() [DONE]" \
-    << std::endl
+#define TRACE_FUNC_END if (TRACE_LVL < 1) ; else        \
+        std::cerr                                       \
+            << std::endl                                \
+            << __FILE__ << ", "                         \
+            << __LINE__ << ", "                         \
+            << __func__ << "() [DONE]"                  \
+            << std::endl
 
 #define TRACE_VERBOSE             if (TRACE_LVL < 2) ; else TRACE
 #define TRACE_FUNC_BEGIN_VERBOSE  if (TRACE_LVL < 2) ; else TRACE_FUNC_BEGIN
