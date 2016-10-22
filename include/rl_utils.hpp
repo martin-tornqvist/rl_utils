@@ -76,7 +76,7 @@ void assert_impl(const bool check,
                  const int line,
                  const char* func);
 
-}
+} // do_not_call
 
 #include <vector>
 #include <string>

@@ -1,5 +1,7 @@
 #include "rl_utils.hpp"
 
+#include <time.h>
+
 std::string TimeData::time_str(const TimeType lowest,
                                const bool add_separators) const
 {

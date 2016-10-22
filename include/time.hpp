@@ -22,11 +22,11 @@ struct TimeData
         second_ (0) {}
 
     TimeData(int year,
-              int month,
-              int day,
-              int hour,
-              int minute,
-              int second) :
+             int month,
+             int day,
+             int hour,
+             int minute,
+             int second) :
         year_   (year),
         month_  (month),
         day_    (day),
