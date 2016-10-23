@@ -115,57 +115,79 @@ public:
 
     bool operator==(const P& p) const
     {
-        return x == p.x && y == p.y;
+        return
+            (x == p.x) &&
+            (y == p.y);
     }
 
     bool operator!=(const P& p) const
     {
-        return x != p.x || y != p.y;
+        return
+            (x != p.x) ||
+            (y != p.y);
     }
 
     bool operator!=(const int v) const
     {
-        return x != v || y != v;
+        return
+            (x != v) ||
+            (y != v);
     }
 
     bool operator>(const P& p) const
     {
-        return x > p.x && y > p.y;
+        return
+            (x > p.x) &&
+            (y > p.y);
     }
 
     bool operator>(const int v) const
     {
-        return x > v && y > v;
+        return
+            (x > v) &&
+            (y > v);
     }
 
     bool operator<(const P& p) const
     {
-        return x < p.x && y < p.y;
+        return
+            (x < p.x) &&
+            (y < p.y);
     }
 
     bool operator<(const int v) const
     {
-        return x < v && y < v;
+        return
+            (x < v) &&
+            (y < v);
     }
 
     bool operator>=(const P& p) const
     {
-        return x >= p.x && y >= p.y;
+        return
+            (x >= p.x) &&
+            (y >= p.y);
     }
 
     bool operator>=(const int v) const
     {
-        return x >= v && y >= v;
+        return
+            (x >= v) &&
+            (y >= v);
     }
 
     bool operator<=(const P& p) const
     {
-        return x <= p.x && y <= p.y;
+        return
+            (x <= p.x) &&
+            (y <= p.y);
     }
 
     bool operator<=(const int  v) const
     {
-        return x <= v && y <= v;
+        return
+            (x <= v) &&
+            (y <= v);
     }
 
     P signs() const

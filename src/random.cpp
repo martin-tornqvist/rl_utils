@@ -1,6 +1,6 @@
 #include "rl_utils.hpp"
 
-#include "mersenne_twister.hpp"
+#include <random>
 
 int DiceParam::roll() const
 {
@@ -23,9 +23,18 @@ namespace rnd
 namespace
 {
 
-MTRand mt_rand;
+std::random_device random_device_;
 
-int roll(const int rolls, const int sides)
+std::mt19937 rng_(random_device_());
+
+} // namespace
+
+// void seed(const unsigned long val)
+// {
+//     mt_rand = MTRand(val);
+// }
+
+int dice(const int rolls, const int sides)
 {
     if (sides <= 0)
     {
@@ -39,29 +48,19 @@ int roll(const int rolls, const int sides)
 
     int result = 0;
 
+    const Range roll_range(1, sides);
+
     for (int i = 0; i < rolls; ++i)
     {
-        result += mt_rand.randInt(sides - 1) + 1;
+        result += roll_range.roll();
     }
 
     return result;
 }
 
-} // namespace
-
-void seed(const unsigned long val)
-{
-    mt_rand = MTRand(val);
-}
-
-int dice(const int rolls, const int sides)
-{
-    return roll(rolls, sides);
-}
-
 bool coin_toss()
 {
-    return roll(1, 2) == 2;
+    return range(1, 2) == 2;
 }
 
 bool fraction(const int numer, const int denom)
@@ -92,7 +91,7 @@ bool fraction(const int numer, const int denom)
         return true;
     }
 
-    return roll(1, denom) <= numer;
+    return range(1, denom) <= numer;
 }
 
 bool one_in(const int N)
@@ -105,17 +104,34 @@ int range(const int v1, const int v2)
     const int min = std::min(v1, v2);
     const int max = std::max(v1, v2);
 
-    return min + roll(1, max - min + 1) - 1;
+    std::uniform_int_distribution<int> dist(min, max);
+
+    return dist(rng_);
+}
+
+int range_binom(const int v1, const int v2, const double p)
+{
+    const int min = std::min(v1, v2);
+    const int max = std::max(v1, v2);
+
+    const int upper_random_value = max - min;
+
+    std::binomial_distribution<std::mt19937::result_type>
+        dist(upper_random_value, p);
+
+    const int random_value = dist(rng_);
+
+    return min + random_value;
 }
 
 int percent()
 {
-    return roll(1, 100);
+    return range(1, 100);
 }
 
 bool percent(const int pct_chance)
 {
-    return pct_chance >= roll(1, 100);
+    return pct_chance >= range(1, 100);
 }
 
 int weighted_choice(const std::vector<int> weights)

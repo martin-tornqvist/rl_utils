@@ -109,10 +109,7 @@ struct Fraction
 namespace rnd
 {
 
-// NOTE: If no parameters are passed to the MTRand constructor, it will be
-//       seeded with current time. Seeding it manually is only necessary if seed
-//       should be controlled.
-void seed(const unsigned long val);
+// void seed(const unsigned long val);
 
 // NOTE: If not called with a positive non-zero number of sides, this will
 //        always return zero.
@@ -127,6 +124,9 @@ bool one_in(const int N);
 // Can be called with any range (positive or negative), V2 does *not* have to be
 // bigger than V1.
 int range(const int v1, const int v2);
+
+// NOTE: "p" shall be within [0.0, 1.0]
+int range_binom(const int v1, const int v2, const double p);
 
 int percent();
 
