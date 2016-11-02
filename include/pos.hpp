@@ -183,7 +183,7 @@ public:
             (y <= p.y);
     }
 
-    bool operator<=(const int  v) const
+    bool operator<=(const int v) const
     {
         return
             (x <= v) &&
@@ -192,8 +192,8 @@ public:
 
     P signs() const
     {
-        return P(x == 0 ? 0 : x > 0 ? 1 : -1,
-                 y == 0 ? 0 : y > 0 ? 1 : -1);
+        return P((x == 0) ? 0 : (x > 0) ? 1 : -1,
+                 (y == 0) ? 0 : (y > 0) ? 1 : -1);
     }
 
     void set(const int x_, const int y_)
