@@ -55,8 +55,6 @@ int taxi_dist(const P& p0, const P& p1);
 
 bool is_val_in_range(const int v, const Range range);
 
-std::string to_str(const int v);
-
 int to_int(const std::string& in);
 
 #endif // RL_UTILS_MISC_HPP

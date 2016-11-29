@@ -5,22 +5,22 @@
 std::string TimeData::time_str(const TimeType lowest,
                                const bool add_separators) const
 {
-    std::string ret = to_str(year_);
+    std::string ret = std::to_string(year_);
 
     const std::string month_str =
-        (month_ < 10 ? "0" : "") + to_str(month_);
+        (month_ < 10 ? "0" : "") + std::to_string(month_);
 
     const std::string day_str =
-        (day_ < 10 ? "0" : "") + to_str(day_);
+        (day_ < 10 ? "0" : "") + std::to_string(day_);
 
     const std::string hour_str =
-        (hour_ < 10 ? "0" : "") + to_str(hour_);
+        (hour_ < 10 ? "0" : "") + std::to_string(hour_);
 
     const std::string minute_str =
-        (minute_ < 10 ? "0" : "") + to_str(minute_);
+        (minute_ < 10 ? "0" : "") + std::to_string(minute_);
 
     const std::string second_str =
-        (second_ < 10 ? "0" : "") + to_str(second_);
+        (second_ < 10 ? "0" : "") + std::to_string(second_);
 
     if (lowest >= TimeType::month)
     {

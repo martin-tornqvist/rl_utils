@@ -148,13 +148,6 @@ bool is_val_in_range(const int V, const Range range)
     return range.is_in_range(V);
 }
 
-std::string to_str(const int in)
-{
-    std::ostringstream buffer;
-    buffer << in;
-    return buffer.str();
-}
-
 int to_int(const std::string& in)
 {
     int _nr;
