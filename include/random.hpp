@@ -128,8 +128,6 @@ int range(const int v1, const int v2);
 // NOTE: "p" shall be within [0.0, 1.0]
 int range_binom(const int v1, const int v2, const double p);
 
-int percent();
-
 bool percent(const int pct_chance);
 
 int weighted_choice(const std::vector<int> weights);

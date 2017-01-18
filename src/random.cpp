@@ -124,11 +124,6 @@ int range_binom(const int v1, const int v2, const double p)
     return min + random_value;
 }
 
-int percent()
-{
-    return range(1, 100);
-}
-
 bool percent(const int pct_chance)
 {
     return pct_chance >= range(1, 100);

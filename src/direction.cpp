@@ -168,9 +168,10 @@ void compass_dir_name(const P& from_pos,
     dst = "";
 
     const P offset(to_pos - from_pos);
+
     const double angle_db = atan2(-offset.y, offset.x);
 
-    if (angle_db        <  -edge[2] && angle_db >  -edge[3])
+    if (angle_db < -edge[2] && angle_db > -edge[3])
     {
         dst = "SW";
     }
@@ -178,23 +179,23 @@ void compass_dir_name(const P& from_pos,
     {
         dst = "S";
     }
-    else if (angle_db <  -edge[0] && angle_db >  -edge[1])
+    else if (angle_db < -edge[0] && angle_db > -edge[1])
     {
         dst = "SE";
     }
-    else if (angle_db >= -edge[0] && angle_db <=  edge[0])
+    else if (angle_db >= -edge[0] && angle_db <= edge[0])
     {
         dst = "E";
     }
-    else if (angle_db >   edge[0] && angle_db <   edge[1])
+    else if (angle_db > edge[0] && angle_db < edge[1])
     {
         dst = "NE";
     }
-    else if (angle_db >=  edge[1] && angle_db <=  edge[2])
+    else if (angle_db >= edge[1] && angle_db <= edge[2])
     {
         dst = "N";
     }
-    else if (angle_db >   edge[2] && angle_db <   edge[3])
+    else if (angle_db > edge[2] && angle_db < edge[3])
     {
         dst = "NW";
     }
@@ -207,8 +208,9 @@ void compass_dir_name(const P& from_pos,
 void compass_dir_name(const Dir dir, std::string& dst)
 {
 
-    const P& o  = offset(dir);
-    dst         = compass_dir_names[o.x + 1][o.y + 1];
+    const P& o = offset(dir);
+
+    dst = compass_dir_names[o.x + 1][o.y + 1];
 }
 
 void compass_dir_name(const P& offs, std::string& dst)
