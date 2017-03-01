@@ -26,6 +26,19 @@ struct DiceParam
         return *this;
     }
 
+    bool operator==(const DiceParam& other) const
+    {
+        return
+            (rolls == other.rolls) &&
+            (sides == other.sides) &&
+            (plus == other.plus);
+    }
+
+    bool operator!=(const DiceParam& other) const
+    {
+        return !(*this == other);
+    }
+
     int max() const
     {
         return (rolls * sides) + plus;
