@@ -21,9 +21,8 @@ int constr_in_range(const double min,
 // value to store (true/false). This can for example be useful if you have a
 // parsed map of blocked and free cells, and you want a list of free cells to
 // (randomly) select from.
-void to_vec(const bool a[map_w][map_h],
-            const bool value_to_store,
-            std::vector<P>& out);
+std::vector<P> to_vec(const bool a[map_w][map_h],
+                      const bool value_to_store);
 
 bool is_pos_inside(const P& pos, const R& area);
 
