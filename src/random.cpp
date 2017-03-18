@@ -1,7 +1,5 @@
 #include "rl_utils.hpp"
 
-#include <random>
-
 int DiceParam::roll() const
 {
     return rnd::dice(rolls, sides) + plus;
@@ -20,19 +18,39 @@ bool Fraction::roll() const
 namespace rnd
 {
 
-namespace
-{
+std::random_device random_device;
 
-std::random_device random_device_;
-
-std::mt19937 rng_(random_device_());
-
-} // namespace
+std::mt19937 rng(random_device());
 
 // void seed(const unsigned long val)
 // {
 //     mt_rand = MTRand(val);
 // }
+
+int range(const int v1, const int v2)
+{
+    const int min = std::min(v1, v2);
+    const int max = std::max(v1, v2);
+
+    std::uniform_int_distribution<int> dist(min, max);
+
+    return dist(rng);
+}
+
+int range_binom(const int v1, const int v2, const double p)
+{
+    const int min = std::min(v1, v2);
+    const int max = std::max(v1, v2);
+
+    const int upper_random_value = max - min;
+
+    std::binomial_distribution<std::mt19937::result_type>
+        dist(upper_random_value, p);
+
+    const int random_value = dist(rng);
+
+    return min + random_value;
+}
 
 int dice(const int rolls, const int sides)
 {
@@ -97,31 +115,6 @@ bool fraction(const int numer, const int denom)
 bool one_in(const int N)
 {
     return fraction(1, N);
-}
-
-int range(const int v1, const int v2)
-{
-    const int min = std::min(v1, v2);
-    const int max = std::max(v1, v2);
-
-    std::uniform_int_distribution<int> dist(min, max);
-
-    return dist(rng_);
-}
-
-int range_binom(const int v1, const int v2, const double p)
-{
-    const int min = std::min(v1, v2);
-    const int max = std::max(v1, v2);
-
-    const int upper_random_value = max - min;
-
-    std::binomial_distribution<std::mt19937::result_type>
-        dist(upper_random_value, p);
-
-    const int random_value = dist(rng_);
-
-    return min + random_value;
 }
 
 bool percent(const int pct_chance)

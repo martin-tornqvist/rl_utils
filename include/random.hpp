@@ -1,6 +1,9 @@
 #ifndef RL_UTILS_RANDOM_HPP
 #define RL_UTILS_RANDOM_HPP
 
+#include <random>
+#include <algorithm>
+
 struct DiceParam
 {
     DiceParam() :
@@ -122,6 +125,10 @@ struct Fraction
 namespace rnd
 {
 
+extern std::random_device random_device;
+
+extern std::mt19937 rng;
+
 // void seed(const unsigned long val);
 
 // NOTE: If not called with a positive non-zero number of sides, this will
@@ -146,17 +153,23 @@ bool percent(const int pct_chance);
 int weighted_choice(const std::vector<int> weights);
 
 template <typename T>
-T element(const std::vector<T>& vec)
+T element(const std::vector<T>& v)
 {
-    const size_t idx = range(0, vec.size() - 1);
+    const size_t idx = range(0, v.size() - 1);
 
-    return vec[idx];
+    return v[idx];
 }
 
 template <typename T>
-size_t idx(const std::vector<T>& vec)
+size_t idx(const std::vector<T>& v)
 {
-    return range(0, vec.size() - 1);
+    return range(0, v.size() - 1);
+}
+
+template <typename T>
+void shuffle(std::vector<T>& v)
+{
+    std::shuffle(begin(v), end(v), rng);
 }
 
 } // rnd
