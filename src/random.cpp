@@ -124,6 +124,8 @@ bool percent(const int pct_chance)
 
 int weighted_choice(const std::vector<int> weights)
 {
+    ASSERT(!weights.empty());
+
 #ifndef NDEBUG
     for (const int weight : weights)
     {

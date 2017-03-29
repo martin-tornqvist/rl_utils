@@ -44,7 +44,7 @@ std::vector<P> to_vec(const bool a[map_w][map_h],
 {
     std::vector<P> result;
 
-    // Reserve space for worst case to avoid tons of reallocations
+    // Reserve space for worst case of push-backs
     result.reserve(nr_map_cells);
 
     for (int x = 0; x < map_w; ++x)
@@ -53,7 +53,7 @@ std::vector<P> to_vec(const bool a[map_w][map_h],
         {
             if (a[x][y] == value_to_store)
             {
-                result.push_back(P(x, y));
+                result.emplace_back(P(x, y));
             }
         }
     }
