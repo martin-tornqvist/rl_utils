@@ -81,35 +81,41 @@ bool coin_toss()
     return range(1, 2) == 2;
 }
 
-bool fraction(const int numer, const int denom)
+bool fraction(const int num, const int den)
 {
+    //
+    // Debug mode checks
+    //
+
     // This function should never be called with a denominator less than one,
     // since it's unclear what e.g. "N times in -1" would mean.
-    ASSERT(denom >= 1);
+    ASSERT(den >= 1);
 
     // If the numerator is bigger than the denominator, it's likely a bug
     // (should something occur e.g. 5 times in 3 ???) - don't allow this...
-    ASSERT(numer <= denom);
+    ASSERT(num <= den);
 
     // A negative numerator is of course nonsense
-    ASSERT(numer >= 0);
+    ASSERT(num >= 0);
 
-    // If any of the rules above are broken on a release build, try to perform
-    // the action that was *probably* intended.
+    //
+    // If any of the rules above are broken on a release build, we try to
+    // perform the action that was probably intended.
+    //
+    // NOTE: A numerator of 0 is allowed (it simply means "no chance")
+    //
 
-    // NOTE: A numerator of 0 is always allowed (it simply means "no chance")
-
-    if ((numer <= 0) || (denom <= 0))
+    if ((num <= 0) || (den <= 0))
     {
         return false;
     }
 
-    if ((numer >= denom) || (denom == 1))
+    if ((num >= den) || (den == 1))
     {
         return true;
     }
 
-    return range(1, denom) <= numer;
+    return range(1, den) <= num;
 }
 
 bool one_in(const int N)

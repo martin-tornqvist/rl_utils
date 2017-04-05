@@ -108,10 +108,18 @@ struct Fraction
         num(num),
         den(den) {}
 
-    void set(const int numer, const int denom)
+    void set(const int num, const int den)
     {
-        num = numer;
-        den = denom;
+        this->num = num;
+        this->den = den;
+    }
+
+    Fraction& operator=(const Fraction& other)
+    {
+        num = other.num;
+        den = other.den;
+
+        return *this;
     }
 
     bool roll() const;
@@ -137,7 +145,7 @@ int dice(const int rolls, const int sides);
 
 bool coin_toss();
 
-bool fraction(const int numer, const int denom);
+bool fraction(const int num, const int den);
 
 bool one_in(const int N);
 
