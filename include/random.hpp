@@ -77,7 +77,9 @@ struct Range
 
     bool is_in_range(const int v) const
     {
-        return v >= min && v <= max;
+        return
+            (v >= min) &&
+            (v <= max);
     }
 
     void set(const int min_val, const int max_val)

@@ -19,18 +19,19 @@ void floodfill(const P& p0,
     // index to try next (cheaper than erasing front elements).
     size_t next_p_idx = 0;
 
-    int     val                 = 0;
-    bool    path_exists         = true;
-    bool    is_at_tgt           = false;
-    bool    is_stopping_at_tgt  = p1.x != -1;
+    int val = 0;
+    bool path_exists = true;
+    bool is_at_tgt = false;
+    bool is_stopping_at_tgt = p1.x != -1;
 
     const R bounds(P(1, 1), P(map_w, map_h) - 2);
 
     P p(p0);
 
-    const auto& dirs = allow_diagonal ?
-                       dir_utils::dir_list :
-                       dir_utils::cardinal_list;
+    const auto& dirs =
+        allow_diagonal ?
+        dir_utils::dir_list :
+        dir_utils::cardinal_list;
 
     bool done = false;
 
@@ -42,11 +43,10 @@ void floodfill(const P& p0,
         {
             const P new_p(p + d);
 
-            if (
-                !blocked[new_p.x][new_p.y]     &&
-                bounds.is_p_inside(new_p)      &&
-                out[new_p.x][new_p.y] == 0     &&
-                new_p != p0)
+            if (!blocked[new_p.x][new_p.y] &&
+                bounds.is_p_inside(new_p) &&
+                (out[new_p.x][new_p.y] == 0) &&
+                (new_p != p0))
             {
                 val = out[p.x][p.y];
 
