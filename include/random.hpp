@@ -135,11 +135,9 @@ struct Fraction
 namespace rnd
 {
 
-extern std::random_device random_device;
-
 extern std::mt19937 rng;
 
-// void seed(const unsigned long val);
+void seed();
 
 // NOTE: If not called with a positive non-zero number of sides, this will
 //        always return zero.

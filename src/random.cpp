@@ -18,14 +18,23 @@ bool Fraction::roll() const
 namespace rnd
 {
 
-std::random_device random_device;
+std::array<int, 624> seed_data_;
 
-std::mt19937 rng(random_device());
+std::random_device random_device_;
 
-// void seed(const unsigned long val)
-// {
-//     mt_rand = MTRand(val);
-// }
+std::mt19937 rng;
+
+void seed()
+{
+    std::generate_n(seed_data_.data(),
+                    seed_data_.size(),
+                    std::ref(random_device_));
+
+    std::seed_seq seq(std::begin(seed_data_),
+                      std::end(seed_data_));
+
+    rng.seed(seq);
+}
 
 int range(const int v1, const int v2)
 {
