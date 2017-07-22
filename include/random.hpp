@@ -139,6 +139,8 @@ extern std::mt19937 rng;
 
 void seed();
 
+void seed(uint32_t seed);
+
 // NOTE: If not called with a positive non-zero number of sides, this will
 //        always return zero.
 int dice(const int rolls, const int sides);
