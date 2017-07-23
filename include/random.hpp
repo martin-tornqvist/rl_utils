@@ -3,25 +3,27 @@
 
 #include <random>
 #include <algorithm>
+#include <string>
+#include <iomanip>
 
-struct DiceParam
+struct Dice
 {
-    DiceParam() :
+    Dice() :
         rolls   (0),
         sides   (0),
         plus    (0) {}
 
-    DiceParam(const int rolls, const int sides, const int plus = 0) :
+    Dice(const int rolls, const int sides, const int plus = 0) :
         rolls   (rolls),
         sides   (sides),
         plus    (plus) {}
 
-    DiceParam(const DiceParam& other) :
+    Dice(const Dice& other) :
         rolls   (other.rolls),
         sides   (other.sides),
         plus    (other.plus) {}
 
-    DiceParam& operator=(const DiceParam& other)
+    Dice& operator=(const Dice& other)
     {
         rolls = other.rolls;
         sides = other.sides;
@@ -29,7 +31,7 @@ struct DiceParam
         return *this;
     }
 
-    bool operator==(const DiceParam& other) const
+    bool operator==(const Dice& other) const
     {
         return
             (rolls == other.rolls) &&
@@ -37,7 +39,7 @@ struct DiceParam
             (plus == other.plus);
     }
 
-    bool operator!=(const DiceParam& other) const
+    bool operator!=(const Dice& other) const
     {
         return !(*this == other);
     }
@@ -50,6 +52,43 @@ struct DiceParam
     int min() const
     {
         return (rolls + plus);
+    }
+
+    double avg() const
+    {
+        const double roll_avg = ((double)sides + 1.0) / 2.0;
+
+        const double roll_avg_tot = roll_avg * (double)rolls;
+
+        return roll_avg_tot + (double)plus;
+    }
+
+    std::string str() const
+    {
+        const std::string rolls_str = std::to_string(rolls);
+
+        const std::string sides_str = std::to_string(sides);
+
+        const std::string plus_str =
+            (plus == 0) ? "" :
+            (plus > 0) ?
+            ("+" + std::to_string(plus)) :
+            ("-" + std::to_string(plus));
+
+        return rolls_str + "d" + sides_str + plus_str;
+    }
+
+    std::string str_avg() const
+    {
+        const double val = avg();
+
+        double rounded = roundf(val * 100.0) / 100.0;
+
+        std::ostringstream ss;
+
+        ss << std::fixed << std::setprecision(1) << rounded;
+
+        return ss.str();
     }
 
     int roll() const;

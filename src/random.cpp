@@ -1,6 +1,6 @@
 #include "rl_utils.hpp"
 
-int DiceParam::roll() const
+int Dice::roll() const
 {
     return rnd::dice(rolls, sides) + plus;
 }
