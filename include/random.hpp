@@ -69,13 +69,18 @@ struct Dice
 
         const std::string sides_str = std::to_string(sides);
 
-        const std::string plus_str =
+        const std::string plus_str = str_plus();
+
+        return rolls_str + "d" + sides_str + plus_str;
+    }
+
+    std::string str_plus() const
+    {
+        return
             (plus == 0) ? "" :
             (plus > 0) ?
             ("+" + std::to_string(plus)) :
             ("-" + std::to_string(plus));
-
-        return rolls_str + "d" + sides_str + plus_str;
     }
 
     std::string str_avg() const

@@ -7,6 +7,32 @@ void pathfind(const P& p0,
               const bool allow_diagonal,
               const bool randomize_steps)
 {
+    int flood[map_w][map_h];
+
+    floodfill(
+        p0,
+        blocked,
+        flood,
+        -1,
+        p1,
+        allow_diagonal);
+
+    pathfind_with_flood(
+        p0,
+        p1,
+        flood,
+        out,
+        allow_diagonal,
+        randomize_steps);
+}
+
+void pathfind_with_flood(const P& p0,
+                         const P& p1,
+                         const int flood[map_w][map_h],
+                         std::vector<P>& out,
+                         const bool allow_diagonal,
+                         const bool randomize_steps)
+{
     out.clear();
 
     if (p0 == p1)
@@ -15,16 +41,7 @@ void pathfind(const P& p0,
         return;
     }
 
-    int flood_buffer[map_w][map_h];
-
-    floodfill(p0,
-              blocked,
-              flood_buffer,
-              -1,
-              p1,
-              allow_diagonal);
-
-    if (flood_buffer[p1.x][p1.y] == 0)
+    if (flood[p1.x][p1.y] == 0)
     {
         // No path exists
         return;
@@ -41,7 +58,7 @@ void pathfind(const P& p0,
 
     // The path length will be equal to the flood value at the target cell, so
     // we can reserve that many elements beforehand.
-    out.reserve(flood_buffer[p1.x][p1.y]);
+    out.reserve(flood[p1.x][p1.y]);
 
     // We start at the target cell
     P p(p1);
@@ -51,7 +68,7 @@ void pathfind(const P& p0,
 
     while (true)
     {
-        const int current_val = flood_buffer[p.x][p.y];
+        const int current_val = flood[p.x][p.y];
 
         P adj_p;
 
@@ -70,7 +87,7 @@ void pathfind(const P& p0,
 
             if (map_r.is_p_inside(adj_p))
             {
-                const int adj_val = flood_buffer[adj_p.x][adj_p.y];
+                const int adj_val = flood[adj_p.x][adj_p.y];
 
                 // Mark this as a valid travel direction if it is not blocked,
                 // and is fewer steps from the target than the current cell.
