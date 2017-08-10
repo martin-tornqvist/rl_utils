@@ -50,7 +50,8 @@ void floodfill(const P& p0,
             {
                 val = out[p.x][p.y];
 
-                if (travel_lmt == -1 || val < travel_lmt)
+                if ((travel_lmt == -1) ||
+                    (val < travel_lmt))
                 {
                     out[new_p.x][new_p.y] = val + 1;
                 }

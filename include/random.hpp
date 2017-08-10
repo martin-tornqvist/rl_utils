@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <string>
 #include <iomanip>
+#include <sstream>
 
 struct Dice
 {
