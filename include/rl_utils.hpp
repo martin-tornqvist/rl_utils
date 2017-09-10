@@ -35,7 +35,7 @@
 
 #define TRACE if (TRACE_LVL < 1) ; else         \
         std::cerr                               \
-            << std::endl                        \
+            << "DEBUG: "                        \
             << __FILE__ << ", "                 \
             << __LINE__ << ", "                 \
             << __func__ << "():"                \
@@ -43,18 +43,18 @@
 
 #define TRACE_FUNC_BEGIN if (TRACE_LVL < 1) ; else      \
         std::cerr                                       \
-            << std::endl                                \
+            << "DEBUG: "                                \
             << __FILE__ << ", "                         \
             << __LINE__ << ", "                         \
-            << __func__ << "()..."                      \
+            << __func__ << "() [BEGIN]"                 \
             << std::endl
 
 #define TRACE_FUNC_END if (TRACE_LVL < 1) ; else        \
         std::cerr                                       \
-            << std::endl                                \
+            << "DEBUG: "                                \
             << __FILE__ << ", "                         \
             << __LINE__ << ", "                         \
-            << __func__ << "() [DONE]"                  \
+            << __func__ << "() [END]"                   \
             << std::endl
 
 #define TRACE_VERBOSE             if (TRACE_LVL < 2) ; else TRACE
